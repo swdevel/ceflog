@@ -11,8 +11,7 @@
 
 Для сборки модульных тестов потребуется установить следующие пакеты:
 ~~~
-sudo apt-get install libgtest-dev
-sudo apt-get install google-mock
+$> sudo apt-get install libgtest-dev
 ~~~
 
 ## Сборка
@@ -20,19 +19,19 @@ sudo apt-get install google-mock
 ### Linux
 
 ~~~
-mkdir -p $CEFLOG_PATH && cd $CEFLOG_PATH
-git clone https://github.com/swdevel/ceflog.git .
-mkdir -p $CEFLOG_BUILD_PATH && cd $CEFLOG_BUILD_PATH
-cmake $CEFLOG_PATH
-make
+$> mkdir -p $CEFLOG_PATH && cd $CEFLOG_PATH
+$> git clone https://github.com/swdevel/ceflog.git .
+$> mkdir -p $CEFLOG_BUILD_PATH && cd $CEFLOG_BUILD_PATH
+$> cmake $CEFLOG_PATH
+$> make
 ~~~
 
 Для сборки тестов:
 ~~~
-cmake $CEFLOG_PATH -DBUILD_TESTS=ON
+$> cmake $CEFLOG_PATH -DBUILD_TESTS=ON
 ~~~
 
 Для сборки примеров:
 ~~~
-cmake $CEFLOG_PATH -DBUILD_EXAMPLES=ON
+$> cmake $CEFLOG_PATH -DBUILD_EXAMPLES=ON
 ~~~
