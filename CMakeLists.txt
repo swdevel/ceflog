@@ -6,13 +6,16 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_library(ceflog STATIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ceflog.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFEvent.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFLog.cpp
+
 )
 
 if (BUILD_TESTS)
     message("Build unit tests: on")
 
     add_executable(tests
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/CEFEventTest.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
     )
 

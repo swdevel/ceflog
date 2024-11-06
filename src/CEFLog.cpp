@@ -1,3 +1,3 @@
-#include "CEFLogMacro.h"
+#include "CEFLog.h"
 
 // TODO:
