@@ -1,5 +1,41 @@
 #include "CEFEvent.h"
 
+#include <iostream>
+
+// Copy assignment
+CEFEvent& CEFEvent::operator=(const CEFEvent& other)
+{
+    if (this == &other) {
+        return *this;
+    }
+
+    CEFEvent temp(other); // Use the copy constructor
+
+    std::swap(deviceVendor, temp.deviceVendor);
+    std::swap(deviceProduct, temp.deviceProduct);
+    std::swap(deviceVersion, temp.deviceVersion);
+    std::swap(deviceEventClassId, temp.deviceEventClassId);
+    std::swap(name, temp.name);
+    std::swap(severity, temp.severity);
+
+    return *this;
+}
+
+// Move assignment
+CEFEvent& CEFEvent::operator=(CEFEvent&& other) noexcept
+{
+    CEFEvent temp(std::move(other));
+
+    std::swap(deviceVendor, temp.deviceVendor);
+    std::swap(deviceProduct, temp.deviceProduct);
+    std::swap(deviceVersion, temp.deviceVersion);
+    std::swap(deviceEventClassId, temp.deviceEventClassId);
+    std::swap(name, temp.name);
+    std::swap(severity, temp.severity);
+
+    return *this;
+}
+
 void CEFEvent::SetDeviceVendor(const std::string& value) noexcept
 {
     deviceVendor = value;

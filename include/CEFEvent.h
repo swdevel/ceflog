@@ -1,22 +1,23 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 #include "CEFLogMacro.h"
 
-ENUM_CLASS_MACRO(Severity, Low, Medium, High, VeryHigh);
+ENUM_CLASS_MACRO(Severity, Undefined, Low, Medium, High, VeryHigh);
 
 class CEFEvent
 {
 public:
-    CEFEvent() = delete;
+    ~CEFEvent() = default;
 
-    CEFEvent(const std::string& deviceVendor,
-             const std::string& deviceProduct,
-             const std::string& deviceVersion,
-             const std::string& deviceEventClassId,
-             const std::string& name,
-             Severity severity)
+    CEFEvent(const std::string& deviceVendor = "",
+             const std::string& deviceProduct = "",
+             const std::string& deviceVersion = "",
+             const std::string& deviceEventClassId = "",
+             const std::string& name = "",
+             Severity severity = Severity::Undefined)
         : deviceVendor(deviceVendor),
           deviceProduct(deviceProduct),
           deviceVersion(deviceVersion),
@@ -24,10 +25,35 @@ public:
           name(name),
           severity(severity)
     {
-        // TODO: ...
     }
 
-    ~CEFEvent() = default;
+    // Copy constructor
+    CEFEvent(const CEFEvent& other)
+        : CEFEvent(other.deviceVendor,
+                   other.deviceProduct,
+                   other.deviceVersion,
+                   other.deviceEventClassId,
+                   other.name,
+                   other.severity)
+    {
+    }
+
+    // Copy assignment
+    CEFEvent& operator=(const CEFEvent& other);
+
+    // Move constructor
+    CEFEvent(CEFEvent&& other) noexcept
+        : deviceVendor(std::exchange(other.deviceVendor, "")),
+          deviceProduct(std::exchange(other.deviceProduct, "")),
+          deviceVersion(std::exchange(other.deviceVersion, "")),
+          deviceEventClassId(std::exchange(other.deviceEventClassId, "")),
+          name(std::exchange(other.name, "")),
+          severity(std::exchange(other.severity, Severity::Undefined))
+    {
+    }
+
+    // Move assignment
+    CEFEvent& operator=(CEFEvent&& other) noexcept;
 
     void SetDeviceVendor(const std::string& value) noexcept;
 
