@@ -139,3 +139,21 @@ TEST_F(CEFEventTest, SettersTest)
 
     CheckFields(event);
 }
+
+TEST_F(CEFEventTest, ComparisonOperatorsTest)
+{
+    CEFEvent left(mockDeviceVendor,
+                   mockDeviceProduct,
+                   mockDeviceVersion,
+                   mockDeviceEventClassId,
+                   mockName,
+                   mockSeverity);
+
+    CEFEvent right(left);
+
+    EXPECT_TRUE(left == right);
+
+    right.SetName("some other name");
+
+    EXPECT_TRUE(left != right);
+}

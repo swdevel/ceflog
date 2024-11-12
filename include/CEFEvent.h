@@ -92,3 +92,7 @@ private:
 
     Severity severity;
 };
+
+bool operator==(const CEFEvent& left, const CEFEvent& right);
+
+bool operator!=(const CEFEvent& left, const CEFEvent& right);

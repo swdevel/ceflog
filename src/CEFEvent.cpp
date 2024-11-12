@@ -1,7 +1,5 @@
 #include "CEFEvent.h"
 
-#include <iostream>
-
 // Copy assignment
 CEFEvent& CEFEvent::operator=(const CEFEvent& other)
 {
@@ -94,4 +92,24 @@ void CEFEvent::SetSeverity(const Severity& value) noexcept
 Severity CEFEvent::GetSeverity() const noexcept
 {
     return severity;
+}
+
+bool operator==(const CEFEvent& left, const CEFEvent& right)
+{
+    return (left.GetDeviceVendor() == right.GetDeviceVendor() &&
+            left.GetDeviceProduct() == right.GetDeviceProduct() &&
+            left.GetDeviceVersion() == right.GetDeviceVersion() &&
+            left.GetDeviceEventClassId() == right.GetDeviceEventClassId() &&
+            left.GetName() == right.GetName() &&
+            left.GetSeverity() == right.GetSeverity());
+}
+
+bool operator!=(const CEFEvent& left, const CEFEvent& right)
+{
+    return (left.GetDeviceVendor() != right.GetDeviceVendor() ||
+            left.GetDeviceProduct() != right.GetDeviceProduct() ||
+            left.GetDeviceVersion() != right.GetDeviceVersion() ||
+            left.GetDeviceEventClassId() != right.GetDeviceEventClassId() ||
+            left.GetName() != right.GetName() ||
+            left.GetSeverity() != right.GetSeverity());
 }
