@@ -9,6 +9,7 @@ CEFEvent& CEFEvent::operator=(const CEFEvent& other)
 
     CEFEvent temp(other); // Use the copy constructor
 
+    std::swap(formatVersion, temp.formatVersion);
     std::swap(deviceVendor, temp.deviceVendor);
     std::swap(deviceProduct, temp.deviceProduct);
     std::swap(deviceVersion, temp.deviceVersion);
@@ -24,6 +25,7 @@ CEFEvent& CEFEvent::operator=(CEFEvent&& other) noexcept
 {
     CEFEvent temp(std::move(other));
 
+    std::swap(formatVersion, temp.formatVersion);
     std::swap(deviceVendor, temp.deviceVendor);
     std::swap(deviceProduct, temp.deviceProduct);
     std::swap(deviceVersion, temp.deviceVersion);
@@ -32,6 +34,16 @@ CEFEvent& CEFEvent::operator=(CEFEvent&& other) noexcept
     std::swap(severity, temp.severity);
 
     return *this;
+}
+
+void CEFEvent::SetFormatVersion(const uint8_t version) noexcept
+{
+    formatVersion = version;
+}
+
+uint8_t CEFEvent::GetFormatVersion() const noexcept
+{
+    return formatVersion;
 }
 
 void CEFEvent::SetDeviceVendor(const std::string& value) noexcept
@@ -96,7 +108,8 @@ Severity CEFEvent::GetSeverity() const noexcept
 
 bool operator==(const CEFEvent& left, const CEFEvent& right)
 {
-    return (left.GetDeviceVendor() == right.GetDeviceVendor() &&
+    return (left.GetFormatVersion() == right.GetFormatVersion() &&
+            left.GetDeviceVendor() == right.GetDeviceVendor() &&
             left.GetDeviceProduct() == right.GetDeviceProduct() &&
             left.GetDeviceVersion() == right.GetDeviceVersion() &&
             left.GetDeviceEventClassId() == right.GetDeviceEventClassId() &&
@@ -106,10 +119,28 @@ bool operator==(const CEFEvent& left, const CEFEvent& right)
 
 bool operator!=(const CEFEvent& left, const CEFEvent& right)
 {
-    return (left.GetDeviceVendor() != right.GetDeviceVendor() ||
+    return (left.GetFormatVersion() != right.GetFormatVersion() ||
+            left.GetDeviceVendor() != right.GetDeviceVendor() ||
             left.GetDeviceProduct() != right.GetDeviceProduct() ||
             left.GetDeviceVersion() != right.GetDeviceVersion() ||
             left.GetDeviceEventClassId() != right.GetDeviceEventClassId() ||
             left.GetName() != right.GetName() ||
             left.GetSeverity() != right.GetSeverity());
+}
+
+std::ostream& operator<<(std::ostream& os, const CEFEvent& event)
+{
+    const auto prefix = std::string("CEF:") + std::to_string(event.GetFormatVersion());
+    const auto severity = std::string(SeverityToString(event.GetSeverity()));
+    const char delimiter = '|';
+
+    os << prefix + delimiter;
+    os << event.GetDeviceVendor() + delimiter;
+    os << event.GetDeviceProduct() + delimiter;
+    os << event.GetDeviceVersion() + delimiter;
+    os << event.GetDeviceEventClassId() + delimiter;
+    os << event.GetName() + delimiter;
+    os << severity + delimiter;
+
+    return os;
 }

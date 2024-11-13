@@ -6,7 +6,8 @@ class CEFEventTest : public testing::Test
 {
 public:
     CEFEventTest()
-        : mockDeviceVendor("Software Vendor"),
+        : mockFormatVersion(2),
+          mockDeviceVendor("Software Vendor"),
           mockDeviceProduct("Antivirus"),
           mockDeviceVersion("7.1"),
           mockDeviceEventClassId("200"),
@@ -15,8 +16,9 @@ public:
     {
     }
 
-    void CheckFields(const CEFEvent& event) const
+    void CheckEventFields(const CEFEvent& event) const
     {
+        EXPECT_EQ(event.GetFormatVersion(), mockFormatVersion);
         EXPECT_EQ(event.GetDeviceVendor(), mockDeviceVendor);
         EXPECT_EQ(event.GetDeviceProduct(), mockDeviceProduct);
         EXPECT_EQ(event.GetDeviceVersion(), mockDeviceVersion);
@@ -26,6 +28,8 @@ public:
     }
 
 protected:
+    uint8_t mockFormatVersion;
+
     std::string mockDeviceVendor;
 
     std::string mockDeviceProduct;
@@ -42,19 +46,21 @@ protected:
 TEST_F(CEFEventTest, ConstructorTest)
 {
 
-    CEFEvent event(mockDeviceVendor,
+    CEFEvent event(mockFormatVersion,
+                   mockDeviceVendor,
                    mockDeviceProduct,
                    mockDeviceVersion,
                    mockDeviceEventClassId,
                    mockName,
                    mockSeverity);
 
-    CheckFields(event);
+    CheckEventFields(event);
 }
 
 TEST_F(CEFEventTest, CopyConstructorTest)
 {
-    CEFEvent event(mockDeviceVendor,
+    CEFEvent event(mockFormatVersion,
+                   mockDeviceVendor,
                    mockDeviceProduct,
                    mockDeviceVersion,
                    mockDeviceEventClassId,
@@ -63,12 +69,13 @@ TEST_F(CEFEventTest, CopyConstructorTest)
 
     CEFEvent copy(event);
 
-    CheckFields(copy);
+    CheckEventFields(copy);
 }
 
 TEST_F(CEFEventTest, CopyAssignmentTest)
 {
-    CEFEvent event(mockDeviceVendor,
+    CEFEvent event(mockFormatVersion,
+                   mockDeviceVendor,
                    mockDeviceProduct,
                    mockDeviceVersion,
                    mockDeviceEventClassId,
@@ -79,12 +86,13 @@ TEST_F(CEFEventTest, CopyAssignmentTest)
 
     copy = event;
 
-    CheckFields(copy);
+    CheckEventFields(copy);
 }
 
 TEST_F(CEFEventTest, MoveConstructorTest)
 {
-    CEFEvent event(mockDeviceVendor,
+    CEFEvent event(mockFormatVersion,
+                   mockDeviceVendor,
                    mockDeviceProduct,
                    mockDeviceVersion,
                    mockDeviceEventClassId,
@@ -93,7 +101,7 @@ TEST_F(CEFEventTest, MoveConstructorTest)
 
     CEFEvent copy(std::move(event));
 
-    CheckFields(copy);
+    CheckEventFields(copy);
 
     EXPECT_EQ(event.GetDeviceVendor(), "");
     EXPECT_EQ(event.GetDeviceProduct(), "");
@@ -105,7 +113,8 @@ TEST_F(CEFEventTest, MoveConstructorTest)
 
 TEST_F(CEFEventTest, MoveAssignmentTest)
 {
-    CEFEvent event(mockDeviceVendor,
+    CEFEvent event(mockFormatVersion,
+                   mockDeviceVendor,
                    mockDeviceProduct,
                    mockDeviceVersion,
                    mockDeviceEventClassId,
@@ -116,7 +125,7 @@ TEST_F(CEFEventTest, MoveAssignmentTest)
 
     copy = std::move(event);
 
-    CheckFields(copy);
+    CheckEventFields(copy);
 
     EXPECT_EQ(event.GetDeviceVendor(), "");
     EXPECT_EQ(event.GetDeviceProduct(), "");
@@ -130,6 +139,7 @@ TEST_F(CEFEventTest, SettersTest)
 {
     CEFEvent event;
 
+    event.SetFormatVersion(mockFormatVersion);
     event.SetDeviceVendor(mockDeviceVendor);
     event.SetDeviceProduct(mockDeviceProduct);
     event.SetDeviceVersion(mockDeviceVersion);
@@ -137,23 +147,63 @@ TEST_F(CEFEventTest, SettersTest)
     event.SetName(mockName);
     event.SetSeverity(mockSeverity);
 
-    CheckFields(event);
+    CheckEventFields(event);
 }
 
-TEST_F(CEFEventTest, ComparisonOperatorsTest)
+TEST_F(CEFEventTest, OverloadedEqualOperatorTest)
 {
-    CEFEvent left(mockDeviceVendor,
+    CEFEvent left(mockFormatVersion,
+                  mockDeviceVendor,
+                  mockDeviceProduct,
+                  mockDeviceVersion,
+                  mockDeviceEventClassId,
+                  mockName,
+                  mockSeverity);
+
+    CEFEvent right(left);
+
+    EXPECT_TRUE(left == right);
+}
+
+TEST_F(CEFEventTest, OverloadedNotEqualOperatorTest)
+{
+    CEFEvent left(mockFormatVersion,
+                  mockDeviceVendor,
+                  mockDeviceProduct,
+                  mockDeviceVersion,
+                  mockDeviceEventClassId,
+                  mockName,
+                  mockSeverity);
+
+    CEFEvent right(left);
+    right.SetName("some other name");
+
+    EXPECT_TRUE(left != right);
+}
+
+TEST_F(CEFEventTest, OverloadedInsertionOperatorTest)
+{
+    CEFEvent event(mockFormatVersion,
+                   mockDeviceVendor,
                    mockDeviceProduct,
                    mockDeviceVersion,
                    mockDeviceEventClassId,
                    mockName,
                    mockSeverity);
 
-    CEFEvent right(left);
+    const auto prefix = std::string("CEF:") + std::to_string(mockFormatVersion);
+    const auto severity = std::string(SeverityToString(event.GetSeverity()));
 
-    EXPECT_TRUE(left == right);
+    std::string expected = prefix + '|' +
+                           mockDeviceVendor + '|' +
+                           mockDeviceProduct + '|' +
+                           mockDeviceVersion + '|' +
+                           mockDeviceEventClassId + '|' +
+                           mockName + '|' +
+                           severity + '|';
 
-    right.SetName("some other name");
+    std::ostringstream oss;
+    oss << event;
 
-    EXPECT_TRUE(left != right);
+    EXPECT_EQ(oss.str(), expected);
 }

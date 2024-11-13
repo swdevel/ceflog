@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <utility>
 
@@ -7,18 +8,22 @@
 
 ENUM_CLASS_MACRO(Severity, Undefined, Low, Medium, High, VeryHigh);
 
+#define CEF_EVENT_DEFAULT_FORMAT_VERSION 0
+
 class CEFEvent
 {
 public:
     ~CEFEvent() = default;
 
-    CEFEvent(const std::string& deviceVendor = "",
+    CEFEvent(const uint8_t formatVersion = CEF_EVENT_DEFAULT_FORMAT_VERSION,
+             const std::string& deviceVendor = "",
              const std::string& deviceProduct = "",
              const std::string& deviceVersion = "",
              const std::string& deviceEventClassId = "",
              const std::string& name = "",
              Severity severity = Severity::Undefined)
-        : deviceVendor(deviceVendor),
+        : formatVersion(formatVersion),
+          deviceVendor(deviceVendor),
           deviceProduct(deviceProduct),
           deviceVersion(deviceVersion),
           deviceEventClassId(deviceEventClassId),
@@ -29,7 +34,8 @@ public:
 
     // Copy constructor
     CEFEvent(const CEFEvent& other)
-        : CEFEvent(other.deviceVendor,
+        : CEFEvent(other.formatVersion,
+                   other.deviceVendor,
                    other.deviceProduct,
                    other.deviceVersion,
                    other.deviceEventClassId,
@@ -43,7 +49,8 @@ public:
 
     // Move constructor
     CEFEvent(CEFEvent&& other) noexcept
-        : deviceVendor(std::exchange(other.deviceVendor, "")),
+        : formatVersion(std::exchange(other.formatVersion, CEF_EVENT_DEFAULT_FORMAT_VERSION)),
+          deviceVendor(std::exchange(other.deviceVendor, "")),
           deviceProduct(std::exchange(other.deviceProduct, "")),
           deviceVersion(std::exchange(other.deviceVersion, "")),
           deviceEventClassId(std::exchange(other.deviceEventClassId, "")),
@@ -54,6 +61,10 @@ public:
 
     // Move assignment
     CEFEvent& operator=(CEFEvent&& other) noexcept;
+
+    void SetFormatVersion(const uint8_t version) noexcept;
+
+    uint8_t GetFormatVersion() const noexcept;
 
     void SetDeviceVendor(const std::string& value) noexcept;
 
@@ -80,6 +91,8 @@ public:
     Severity GetSeverity() const noexcept;
 
 private:
+    uint8_t formatVersion;
+
     std::string deviceVendor;
 
     std::string deviceProduct;
@@ -96,3 +109,5 @@ private:
 bool operator==(const CEFEvent& left, const CEFEvent& right);
 
 bool operator!=(const CEFEvent& left, const CEFEvent& right);
+
+std::ostream& operator<<(std::ostream& os, const CEFEvent& event);
