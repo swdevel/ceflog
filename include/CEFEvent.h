@@ -10,12 +10,19 @@ ENUM_CLASS_MACRO(Severity, Undefined, Low, Medium, High, VeryHigh);
 
 #define CEF_EVENT_DEFAULT_FORMAT_VERSION 0
 
-struct CEFEventExtension
-{
+/**
+ * @brief Структура для описания пары "ключ-значение"
+ *
+ */
+struct CEFEventExtension {
     std::string key;
     std::string value;
 };
 
+/**
+ * @brief Класс для работы с событиями в формате CEF (Common Event Format)
+ *
+ */
 class CEFEvent
 {
 public:
@@ -72,43 +79,139 @@ public:
     // Move assignment
     CEFEvent& operator=(CEFEvent&& other) noexcept;
 
+    /**
+     * @brief Метод для присвоения значения версии формата CEF
+     *
+     * @param[in] version Идентификатор версии формата CEF
+     * Например, для версии спецификации "1.2", значение будет равно "1"
+     */
     void SetFormatVersion(const uint8_t version) noexcept;
 
+    /**
+     * @brief Метод для получения версии формата CEF
+     *
+     * @return uint8_t Целочисленный идентификатор версии формата CEF
+     */
     uint8_t GetFormatVersion() const noexcept;
 
+    /**
+     * @brief Метод для присвоения значения идентификатора производителя
+     *
+     * @param value Строка-идентификатор производителя
+     */
     void SetDeviceVendor(const std::string& value) noexcept;
 
+    /**
+     * @brief Метод для получения идентификатора производителя
+     *
+     * @param[in] formatString Признак того, что в возвращаемой строке символы должны быть экранированы согласно спецификации формата
+     *
+     * @return std::string Строка-идентификатор производителя
+     */
     std::string GetDeviceVendor(const bool formatString = false) const noexcept;
 
+    /**
+     * @brief Метод для присвоения значения идентификатора продукта
+     *
+     * @param value Строка-идентификатор продукта
+     */
     void SetDeviceProduct(const std::string& value) noexcept;
 
+    /**
+     * @brief Метод для получения идентификатора продукта
+     *
+     * @param[in] formatString Признак того, что в возвращаемой строке символы должны быть экранированы согласно спецификации формата
+     *
+     * @return std::string Строка-идентификатор продукта
+     */
     std::string GetDeviceProduct(const bool formatString = false) const noexcept;
 
+    /**
+     * @brief Метод для присвоения значения идентификатора версии продукта
+     *
+     * @param value Строка-идентификатор версии продукта
+     */
     void SetDeviceVersion(const std::string& value) noexcept;
 
+    /**
+     * @brief Метод для получения идентификатора версии продукта
+     *
+     * @param[in] formatString Признак того, что в возвращаемой строке символы должны быть экранированы согласно спецификации формата
+     *
+     * @return std::string Строка-идентификатор версии продукта
+     */
     std::string GetDeviceVersion(const bool formatString = false) const noexcept;
 
+    /**
+     * @brief Метод для присвоения значения идентификатора типа события
+     *
+     * @param value Строка-идентификатор типа события
+     */
     void SetDeviceEventClassId(const std::string& value) noexcept;
 
+    /**
+     * @brief Метод для получения идентификатора типа события
+     *
+     * @param[in] formatString Признак того, что в возвращаемой строке символы должны быть экранированы согласно спецификации формата
+     *
+     * @return std::string Строка-идентификатор типа события
+     */
     std::string GetDeviceEventClassId(const bool formatString = false) const noexcept;
 
+    /**
+     * @brief Метод для присвоения значения описания события
+     *
+     * @param value Строка для описания события
+     */
     void SetName(const std::string& value) noexcept;
 
+    /**
+     * @brief Метод для получения описания события
+     *
+     * @param[in] formatString Признак того, что в возвращаемой строке символы должны быть экранированы согласно спецификации формата
+     *
+     * @return std::string Строка с описанием события
+     */
     std::string GetName(const bool formatString = false) const noexcept;
 
+    /**
+     * @brief Метод для присвоения идентификатора важности события
+     *
+     * @param value Идентификатор важности события, допустимые значения перечислены в ENUM_CLASS_MACRO(Severity, ...)
+     */
     void SetSeverity(const Severity& value) noexcept;
 
+    /**
+     * @brief Метод для получения идентификатора важности события
+     *
+     * @return Severity Идентификатор важности события, допустимые значения перечислены в ENUM_CLASS_MACRO(Severity, ...)
+     */
     Severity GetSeverity() const noexcept;
 
+    /**
+     * @brief Метод для добавления пары "ключ-значение", служащей для расширения базового формата события
+     *
+     * @param extension Пара "ключ-значение", описанная в структуре CEFEventExtension
+     */
     void PushExtension(const CEFEventExtension& extension) noexcept;
 
+    /**
+     * @brief Метод для получения набора пар "ключ-значение", служащих для расширения базового формата события
+     *
+     * @return std::vector<CEFEventExtension> Контейнер для структур CEFEventExtension
+     */
     std::vector<CEFEventExtension> GetExtensions() const noexcept;
 
+    /**
+     * @brief Метод для получения набора пар "ключ-значение" в строковом представлении
+     *
+     * @param[in] formatString Признак того, что в возвращаемой строке символы должны быть экранированы согласно спецификации формата
+     * @return std::string Строка с парами "ключ-значение"
+     */
     std::string GetExtensionsAsString(const bool formatString = false) const noexcept;
 
 private:
-    enum class Location
-    {
+    enum class Location {
         Header,
         Extension
     };
@@ -116,20 +219,52 @@ private:
     std::string EscapeCharactersIfPresent(const std::string& string, const Location location) const noexcept;
 
 private:
+    /**
+     * @brief Версия формата CEF
+     *
+     */
     uint8_t formatVersion;
 
+    /**
+     * @brief Идентификатор производителя
+     *
+     */
     std::string deviceVendor;
 
+    /**
+     * @brief Идентификатор продукта
+     *
+     */
     std::string deviceProduct;
 
+    /**
+     * @brief Идентификатор версии продукта
+     *
+     */
     std::string deviceVersion;
 
+    /**
+     * @brief Уникальный идентификатор типа события
+     *
+     */
     std::string deviceEventClassId;
 
+    /**
+     * @brief Понятное человеку описание события
+     *
+     */
     std::string name;
 
+    /**
+     * @brief Важность события
+     *
+     */
     Severity severity;
 
+    /**
+     * @brief Набор пар "ключ-значение" для расширения базового формата события
+     *
+     */
     std::vector<CEFEventExtension> extensions;
 };
 
