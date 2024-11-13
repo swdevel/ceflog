@@ -207,3 +207,30 @@ TEST_F(CEFEventTest, OverloadedInsertionOperatorTest)
 
     EXPECT_EQ(oss.str(), expected);
 }
+
+TEST_F(CEFEventTest, EscapeCharactersTest)
+{
+    uint8_t formatVersion = 2;
+    std::string deviceVendor = "|Software Vendor|";
+    std::string deviceProduct = "|\\Antivirus\\|";
+    std::string deviceVersion = "7.1";
+    std::string deviceEventClassId = "200";
+    std::string name = "Worm -== successfully ==- \\stopped\\";
+    Severity severity = Severity::Medium;
+
+    CEFEvent event(formatVersion,
+                   deviceVendor,
+                   deviceProduct,
+                   deviceVersion,
+                   deviceEventClassId,
+                   name,
+                   severity);
+
+    std::ostringstream oss;
+    oss << event;
+
+    std::string expected = "CEF:2|\\|Software Vendor\\||\\|\\\\Antivirus\\\\\\||7.1|"
+                           "200|Worm -== successfully ==- \\\\stopped\\\\|Medium|";
+
+    EXPECT_EQ(oss.str(), expected);
+}

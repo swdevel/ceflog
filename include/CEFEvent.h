@@ -68,27 +68,36 @@ public:
 
     void SetDeviceVendor(const std::string& value) noexcept;
 
-    std::string GetDeviceVendor() const noexcept;
+    std::string GetDeviceVendor(const bool formatString = false) const noexcept;
 
     void SetDeviceProduct(const std::string& value) noexcept;
 
-    std::string GetDeviceProduct() const noexcept;
+    std::string GetDeviceProduct(const bool formatString = false) const noexcept;
 
     void SetDeviceVersion(const std::string& value) noexcept;
 
-    std::string GetDeviceVersion() const noexcept;
+    std::string GetDeviceVersion(const bool formatString = false) const noexcept;
 
     void SetDeviceEventClassId(const std::string& value) noexcept;
 
-    std::string GetDeviceEventClassId() const noexcept;
+    std::string GetDeviceEventClassId(const bool formatString = false) const noexcept;
 
     void SetName(const std::string& value) noexcept;
 
-    std::string GetName() const noexcept;
+    std::string GetName(const bool formatString = false) const noexcept;
 
     void SetSeverity(const Severity& value) noexcept;
 
     Severity GetSeverity() const noexcept;
+
+private:
+    enum class Location
+    {
+        Header,
+        Extension
+    };
+
+    std::string EscapeCharactersIfPresent(const std::string& string, const Location location) const noexcept;
 
 private:
     uint8_t formatVersion;

@@ -1,3 +1,5 @@
+#include <boost/algorithm/string.hpp>
+
 #include "CEFEvent.h"
 
 // Copy assignment
@@ -51,9 +53,9 @@ void CEFEvent::SetDeviceVendor(const std::string& value) noexcept
     deviceVendor = value;
 }
 
-std::string CEFEvent::GetDeviceVendor() const noexcept
+std::string CEFEvent::GetDeviceVendor(const bool formatString) const noexcept
 {
-    return deviceVendor;
+    return formatString ? EscapeCharactersIfPresent(deviceVendor, Location::Header) : deviceVendor;
 }
 
 void CEFEvent::SetDeviceProduct(const std::string& value) noexcept
@@ -61,9 +63,9 @@ void CEFEvent::SetDeviceProduct(const std::string& value) noexcept
     deviceProduct = value;
 }
 
-std::string CEFEvent::GetDeviceProduct() const noexcept
+std::string CEFEvent::GetDeviceProduct(const bool formatString) const noexcept
 {
-    return deviceProduct;
+    return formatString ? EscapeCharactersIfPresent(deviceProduct, Location::Header) : deviceProduct;
 }
 
 void CEFEvent::SetDeviceVersion(const std::string& value) noexcept
@@ -71,9 +73,9 @@ void CEFEvent::SetDeviceVersion(const std::string& value) noexcept
     deviceVersion = value;
 }
 
-std::string CEFEvent::GetDeviceVersion() const noexcept
+std::string CEFEvent::GetDeviceVersion(const bool formatString) const noexcept
 {
-    return deviceVersion;
+    return formatString ? EscapeCharactersIfPresent(deviceVersion, Location::Header) : deviceVersion;
 }
 
 void CEFEvent::SetDeviceEventClassId(const std::string& value) noexcept
@@ -81,9 +83,9 @@ void CEFEvent::SetDeviceEventClassId(const std::string& value) noexcept
     deviceEventClassId = value;
 }
 
-std::string CEFEvent::GetDeviceEventClassId() const noexcept
+std::string CEFEvent::GetDeviceEventClassId(const bool formatString) const noexcept
 {
-    return deviceEventClassId;
+    return formatString ? EscapeCharactersIfPresent(deviceEventClassId, Location::Header) : deviceEventClassId;
 }
 
 void CEFEvent::SetName(const std::string& value) noexcept
@@ -91,9 +93,9 @@ void CEFEvent::SetName(const std::string& value) noexcept
     name = value;
 }
 
-std::string CEFEvent::GetName() const noexcept
+std::string CEFEvent::GetName(const bool formatString) const noexcept
 {
-    return name;
+    return formatString ? EscapeCharactersIfPresent(name, Location::Header) : name;
 }
 
 void CEFEvent::SetSeverity(const Severity& value) noexcept
@@ -104,6 +106,41 @@ void CEFEvent::SetSeverity(const Severity& value) noexcept
 Severity CEFEvent::GetSeverity() const noexcept
 {
     return severity;
+}
+
+std::string CEFEvent::EscapeCharactersIfPresent(const std::string& string, const Location location) const noexcept
+{
+    if (string.empty()) {
+        return string;
+    }
+
+    /*
+        В документации сказано:
+
+        If a backslash (\) is used in the header or the extension, it must be escaped with
+        another backslash (\).
+
+        If a pipe (|) is used in the header, it must be escaped with a backslash (\). But note
+        that the pipes in the extension do not need escaping.
+
+        If an equal sign (=) is used in the extensions, it has to be escaped with a backslash (\).
+        Equal signs in the header need no escaping.
+    */
+
+    std::vector<char> charactersToEscape = {'\\'};
+    location == Location::Header ? charactersToEscape.push_back('|') : charactersToEscape.push_back('=');
+
+    std::string result(string);
+
+    for (const auto& entry : charactersToEscape) {
+
+        const auto search = std::string(1, entry);
+        const auto replace = '\\' + search;
+
+        boost::replace_all(result, search, replace);
+    }
+
+    return result;
 }
 
 bool operator==(const CEFEvent& left, const CEFEvent& right)
@@ -135,11 +172,11 @@ std::ostream& operator<<(std::ostream& os, const CEFEvent& event)
     const char delimiter = '|';
 
     os << prefix + delimiter;
-    os << event.GetDeviceVendor() + delimiter;
-    os << event.GetDeviceProduct() + delimiter;
-    os << event.GetDeviceVersion() + delimiter;
-    os << event.GetDeviceEventClassId() + delimiter;
-    os << event.GetName() + delimiter;
+    os << event.GetDeviceVendor(true) + delimiter;
+    os << event.GetDeviceProduct(true) + delimiter;
+    os << event.GetDeviceVersion(true) + delimiter;
+    os << event.GetDeviceEventClassId(true) + delimiter;
+    os << event.GetName(true) + delimiter;
     os << severity + delimiter;
 
     return os;
