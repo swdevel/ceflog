@@ -10,6 +10,12 @@ ENUM_CLASS_MACRO(Severity, Undefined, Low, Medium, High, VeryHigh);
 
 #define CEF_EVENT_DEFAULT_FORMAT_VERSION 0
 
+struct CEFEventExtension
+{
+    std::string key;
+    std::string value;
+};
+
 class CEFEvent
 {
 public:
@@ -21,14 +27,16 @@ public:
              const std::string& deviceVersion = "",
              const std::string& deviceEventClassId = "",
              const std::string& name = "",
-             Severity severity = Severity::Undefined)
+             Severity severity = Severity::Undefined,
+             const std::vector<CEFEventExtension>& extensions = {})
         : formatVersion(formatVersion),
           deviceVendor(deviceVendor),
           deviceProduct(deviceProduct),
           deviceVersion(deviceVersion),
           deviceEventClassId(deviceEventClassId),
           name(name),
-          severity(severity)
+          severity(severity),
+          extensions(extensions)
     {
     }
 
@@ -40,7 +48,8 @@ public:
                    other.deviceVersion,
                    other.deviceEventClassId,
                    other.name,
-                   other.severity)
+                   other.severity,
+                   other.extensions)
     {
     }
 
@@ -55,7 +64,8 @@ public:
           deviceVersion(std::exchange(other.deviceVersion, "")),
           deviceEventClassId(std::exchange(other.deviceEventClassId, "")),
           name(std::exchange(other.name, "")),
-          severity(std::exchange(other.severity, Severity::Undefined))
+          severity(std::exchange(other.severity, Severity::Undefined)),
+          extensions(std::exchange(other.extensions, {}))
     {
     }
 
@@ -90,6 +100,12 @@ public:
 
     Severity GetSeverity() const noexcept;
 
+    void PushExtension(const CEFEventExtension& extension) noexcept;
+
+    std::vector<CEFEventExtension> GetExtensions() const noexcept;
+
+    std::string GetExtensionsAsString(const bool formatString = false) const noexcept;
+
 private:
     enum class Location
     {
@@ -113,6 +129,8 @@ private:
     std::string name;
 
     Severity severity;
+
+    std::vector<CEFEventExtension> extensions;
 };
 
 bool operator==(const CEFEvent& left, const CEFEvent& right);

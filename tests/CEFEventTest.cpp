@@ -14,6 +14,9 @@ public:
           mockName("Worm successfully stopped"),
           mockSeverity(Severity::VeryHigh)
     {
+        mockExtensions.push_back({"src", "10.0.0.1"});
+        mockExtensions.push_back({"action", "blocked"});
+        mockExtensions.push_back({"dst", "10.0.0.1"});
     }
 
     void CheckEventFields(const CEFEvent& event) const
@@ -25,6 +28,15 @@ public:
         EXPECT_EQ(event.GetDeviceEventClassId(), mockDeviceEventClassId);
         EXPECT_EQ(event.GetName(), mockName);
         EXPECT_EQ(event.GetSeverity(), mockSeverity);
+
+        auto extensions = event.GetExtensions();
+
+        EXPECT_TRUE(
+            std::equal(extensions.begin(), extensions.end(),
+                       mockExtensions.begin(), mockExtensions.end(),
+                       [](auto const& left, auto const& right) {
+                           return (left.key == right.key) && (left.value == right.value);
+                       }));
     }
 
 protected:
@@ -41,6 +53,8 @@ protected:
     std::string mockName;
 
     Severity mockSeverity;
+
+    std::vector<CEFEventExtension> mockExtensions;
 };
 
 TEST_F(CEFEventTest, ConstructorTest)
@@ -52,7 +66,8 @@ TEST_F(CEFEventTest, ConstructorTest)
                    mockDeviceVersion,
                    mockDeviceEventClassId,
                    mockName,
-                   mockSeverity);
+                   mockSeverity,
+                   mockExtensions);
 
     CheckEventFields(event);
 }
@@ -65,7 +80,8 @@ TEST_F(CEFEventTest, CopyConstructorTest)
                    mockDeviceVersion,
                    mockDeviceEventClassId,
                    mockName,
-                   mockSeverity);
+                   mockSeverity,
+                   mockExtensions);
 
     CEFEvent copy(event);
 
@@ -80,7 +96,8 @@ TEST_F(CEFEventTest, CopyAssignmentTest)
                    mockDeviceVersion,
                    mockDeviceEventClassId,
                    mockName,
-                   mockSeverity);
+                   mockSeverity,
+                   mockExtensions);
 
     CEFEvent copy{};
 
@@ -97,7 +114,8 @@ TEST_F(CEFEventTest, MoveConstructorTest)
                    mockDeviceVersion,
                    mockDeviceEventClassId,
                    mockName,
-                   mockSeverity);
+                   mockSeverity,
+                   mockExtensions);
 
     CEFEvent copy(std::move(event));
 
@@ -119,7 +137,8 @@ TEST_F(CEFEventTest, MoveAssignmentTest)
                    mockDeviceVersion,
                    mockDeviceEventClassId,
                    mockName,
-                   mockSeverity);
+                   mockSeverity,
+                   mockExtensions);
 
     CEFEvent copy{};
 
@@ -147,6 +166,10 @@ TEST_F(CEFEventTest, SettersTest)
     event.SetName(mockName);
     event.SetSeverity(mockSeverity);
 
+    for (const auto& entry : mockExtensions) {
+        event.PushExtension(entry);
+    }
+
     CheckEventFields(event);
 }
 
@@ -158,14 +181,51 @@ TEST_F(CEFEventTest, OverloadedEqualOperatorTest)
                   mockDeviceVersion,
                   mockDeviceEventClassId,
                   mockName,
-                  mockSeverity);
+                  mockSeverity,
+                  mockExtensions);
 
     CEFEvent right(left);
 
     EXPECT_TRUE(left == right);
 }
 
-TEST_F(CEFEventTest, OverloadedNotEqualOperatorTest)
+TEST_F(CEFEventTest, OverloadedNotEqualOperatorTest1)
+{
+    CEFEvent left(mockFormatVersion,
+                  mockDeviceVendor,
+                  mockDeviceProduct,
+                  mockDeviceVersion,
+                  mockDeviceEventClassId,
+                  mockName,
+                  mockSeverity,
+                  mockExtensions);
+
+    CEFEvent right(left);
+
+    right.SetName("Some other name");
+
+    EXPECT_TRUE(left != right);
+}
+
+TEST_F(CEFEventTest, OverloadedNotEqualOperatorTest2)
+{
+    CEFEvent left(mockFormatVersion,
+                  mockDeviceVendor,
+                  mockDeviceProduct,
+                  mockDeviceVersion,
+                  mockDeviceEventClassId,
+                  mockName,
+                  mockSeverity,
+                  mockExtensions);
+
+    CEFEvent right(left);
+
+    right.SetSeverity(Severity::Low);
+
+    EXPECT_TRUE(left != right);
+}
+
+TEST_F(CEFEventTest, OverloadedNotEqualOperatorTest3)
 {
     CEFEvent left(mockFormatVersion,
                   mockDeviceVendor,
@@ -176,7 +236,9 @@ TEST_F(CEFEventTest, OverloadedNotEqualOperatorTest)
                   mockSeverity);
 
     CEFEvent right(left);
-    right.SetName("some other name");
+
+    right.PushExtension(mockExtensions[0]);
+    right.PushExtension(mockExtensions[1]);
 
     EXPECT_TRUE(left != right);
 }
@@ -189,7 +251,8 @@ TEST_F(CEFEventTest, OverloadedInsertionOperatorTest)
                    mockDeviceVersion,
                    mockDeviceEventClassId,
                    mockName,
-                   mockSeverity);
+                   mockSeverity,
+                   mockExtensions);
 
     const auto prefix = std::string("CEF:") + std::to_string(mockFormatVersion);
     const auto severity = std::string(SeverityToString(event.GetSeverity()));
@@ -201,6 +264,19 @@ TEST_F(CEFEventTest, OverloadedInsertionOperatorTest)
                            mockDeviceEventClassId + '|' +
                            mockName + '|' +
                            severity + '|';
+
+    std::string extensions;
+
+    for (const auto& entry : mockExtensions) {
+
+        if (!extensions.empty()) {
+            extensions += ' ';
+        }
+
+        extensions += entry.key + "=" + entry.value;
+    }
+
+    expected += extensions;
 
     std::ostringstream oss;
     oss << event;
@@ -218,19 +294,31 @@ TEST_F(CEFEventTest, EscapeCharactersTest)
     std::string name = "Worm -== successfully ==- \\stopped\\";
     Severity severity = Severity::Medium;
 
+    std::vector<CEFEventExtension> extensions;
+
+    extensions.push_back({"src", "10.0.0.1"});
+    extensions.push_back({"action", "blocked"});
+    extensions.push_back({"dst", "10.0.0.1"});
+    extensions.push_back({"filePath", "/user/username/dir/my file name.txt"});
+    extensions.push_back({"id", "---===235===---"});
+
     CEFEvent event(formatVersion,
                    deviceVendor,
                    deviceProduct,
                    deviceVersion,
                    deviceEventClassId,
                    name,
-                   severity);
+                   severity,
+                   extensions);
 
     std::ostringstream oss;
     oss << event;
 
     std::string expected = "CEF:2|\\|Software Vendor\\||\\|\\\\Antivirus\\\\\\||7.1|"
-                           "200|Worm -== successfully ==- \\\\stopped\\\\|Medium|";
+                           "200|Worm -== successfully ==- \\\\stopped\\\\|Medium|"
+                           "src=10.0.0.1 action=blocked dst=10.0.0.1 "
+                           "filePath=/user/username/dir/my file name.txt "
+                           "id=---\\=\\=\\=235\\=\\=\\=---";
 
     EXPECT_EQ(oss.str(), expected);
 }

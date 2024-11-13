@@ -18,6 +18,7 @@ CEFEvent& CEFEvent::operator=(const CEFEvent& other)
     std::swap(deviceEventClassId, temp.deviceEventClassId);
     std::swap(name, temp.name);
     std::swap(severity, temp.severity);
+    std::swap(extensions, temp.extensions);
 
     return *this;
 }
@@ -34,6 +35,7 @@ CEFEvent& CEFEvent::operator=(CEFEvent&& other) noexcept
     std::swap(deviceEventClassId, temp.deviceEventClassId);
     std::swap(name, temp.name);
     std::swap(severity, temp.severity);
+    std::swap(extensions, temp.extensions);
 
     return *this;
 }
@@ -108,6 +110,46 @@ Severity CEFEvent::GetSeverity() const noexcept
     return severity;
 }
 
+void CEFEvent::PushExtension(const CEFEventExtension& extension) noexcept
+{
+    extensions.push_back(extension);
+}
+
+std::vector<CEFEventExtension> CEFEvent::GetExtensions() const noexcept
+{
+    return extensions;
+}
+
+std::string CEFEvent::GetExtensionsAsString(const bool formatString) const noexcept
+{
+    const char delimiter = ' ';
+    std::string result;
+
+    /*
+        В документации сказано:
+
+        An event can contain any number of key-value pairs in any order, separated by spaces (" ").
+        If a field contains a space, such as a file name, this is valid and can be logged in exactly
+        that manner, as shown in the following example:
+
+        filePath=/user/username/dir/my file name.txt
+    */
+
+    for (const auto& entry : extensions) {
+
+        const auto key = formatString ? EscapeCharactersIfPresent(entry.key, Location::Extension) : entry.key;
+        const auto value = formatString ? EscapeCharactersIfPresent(entry.value, Location::Extension) : entry.value;
+
+        if (!result.empty()) {
+            result += delimiter;
+        }
+
+        result += key + "=" + value;
+    }
+
+    return result;
+}
+
 std::string CEFEvent::EscapeCharactersIfPresent(const std::string& string, const Location location) const noexcept
 {
     if (string.empty()) {
@@ -143,6 +185,16 @@ std::string CEFEvent::EscapeCharactersIfPresent(const std::string& string, const
     return result;
 }
 
+static bool ExtensionsAreEqual(const std::vector<CEFEventExtension>& left,
+                               const std::vector<CEFEventExtension>& right)
+{
+    return std::equal(left.begin(), left.end(),
+                      right.begin(), right.end(),
+                      [](auto const& l, auto const& r) {
+                          return (l.key == r.key) && (l.value == r.value);
+                      });
+}
+
 bool operator==(const CEFEvent& left, const CEFEvent& right)
 {
     return (left.GetFormatVersion() == right.GetFormatVersion() &&
@@ -151,7 +203,8 @@ bool operator==(const CEFEvent& left, const CEFEvent& right)
             left.GetDeviceVersion() == right.GetDeviceVersion() &&
             left.GetDeviceEventClassId() == right.GetDeviceEventClassId() &&
             left.GetName() == right.GetName() &&
-            left.GetSeverity() == right.GetSeverity());
+            left.GetSeverity() == right.GetSeverity() &&
+            ExtensionsAreEqual(left.GetExtensions(), right.GetExtensions()) == true);
 }
 
 bool operator!=(const CEFEvent& left, const CEFEvent& right)
@@ -162,7 +215,8 @@ bool operator!=(const CEFEvent& left, const CEFEvent& right)
             left.GetDeviceVersion() != right.GetDeviceVersion() ||
             left.GetDeviceEventClassId() != right.GetDeviceEventClassId() ||
             left.GetName() != right.GetName() ||
-            left.GetSeverity() != right.GetSeverity());
+            left.GetSeverity() != right.GetSeverity() ||
+            ExtensionsAreEqual(left.GetExtensions(), right.GetExtensions()) == false);
 }
 
 std::ostream& operator<<(std::ostream& os, const CEFEvent& event)
@@ -178,6 +232,10 @@ std::ostream& operator<<(std::ostream& os, const CEFEvent& event)
     os << event.GetDeviceEventClassId(true) + delimiter;
     os << event.GetName(true) + delimiter;
     os << severity + delimiter;
+
+    if (!event.GetExtensions().empty()) {
+        os << event.GetExtensionsAsString(true);
+    }
 
     return os;
 }
