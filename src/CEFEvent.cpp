@@ -1,3 +1,13 @@
+/**
+ * @file CEFEvent.cpp
+ * @author Alexander Borisov
+ * @brief Файл содержит реализацию класса для работы с событиями в формате "Common Event Format (CEF)"
+ * @version 0.1
+ * @date 2024-11-14
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include <boost/algorithm/string.hpp>
 
 #include "CEFEvent.h"

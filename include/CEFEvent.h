@@ -1,3 +1,13 @@
+/**
+ * @file CEFEvent.h
+ * @author Alexander Borisov
+ * @brief Файл содержит описание класса для работы с событиями в формате "Common Event Format (CEF)"
+ * @version 0.1
+ * @date 2024-11-14
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #pragma once
 
 #include <cstdint>
