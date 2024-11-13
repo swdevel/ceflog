@@ -12,12 +12,17 @@
 
 Для сборки библиотеки потребуется установить следующие пакеты:
 ~~~
-sudo apt-get install libboost-dev
+$> sudo apt-get install libboost-dev
 ~~~
 
-Для сборки модульных тестов потребуется установить следующие пакеты:
+Для сборки модульных тестов потребуется установить:
 ~~~
 $> sudo apt-get install libgtest-dev
+~~~
+
+Для генерации документации на основе исходных текстов потребуется установить:
+~~~
+$> sudo apt-get install doxygen
 ~~~
 
 ## Сборка
@@ -40,4 +45,11 @@ $> cmake $CEFLOG_PATH -DBUILD_TESTS=ON
 Для сборки примеров:
 ~~~
 $> cmake $CEFLOG_PATH -DBUILD_EXAMPLES=ON
+~~~
+
+Для генерации и просмотра документации:
+~~~
+$> cd $CEFLOG_PATH
+$> doxygen
+$> firefox doxygen/html/index.html
 ~~~
