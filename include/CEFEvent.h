@@ -16,7 +16,7 @@
 
 #include "CEFLogMacro.h"
 
-ENUM_CLASS_MACRO(Severity, Undefined, Low, Medium, High, VeryHigh);
+ENUM_CLASS_MACRO(CEFSeverity, Undefined, Low, Medium, High, VeryHigh);
 
 #define CEF_EVENT_DEFAULT_FORMAT_VERSION 0
 
@@ -44,7 +44,7 @@ public:
              const std::string& deviceVersion = "",
              const std::string& deviceEventClassId = "",
              const std::string& name = "",
-             Severity severity = Severity::Undefined,
+             CEFSeverity severity = CEFSeverity::Undefined,
              const std::vector<CEFEventExtension>& extensions = {})
         : formatVersion(formatVersion),
           deviceVendor(deviceVendor),
@@ -81,7 +81,7 @@ public:
           deviceVersion(std::exchange(other.deviceVersion, "")),
           deviceEventClassId(std::exchange(other.deviceEventClassId, "")),
           name(std::exchange(other.name, "")),
-          severity(std::exchange(other.severity, Severity::Undefined)),
+          severity(std::exchange(other.severity, CEFSeverity::Undefined)),
           extensions(std::exchange(other.extensions, {}))
     {
     }
@@ -187,16 +187,16 @@ public:
     /**
      * @brief Метод для присвоения идентификатора важности события
      *
-     * @param value Идентификатор важности события, допустимые значения перечислены в ENUM_CLASS_MACRO(Severity, ...)
+     * @param value Идентификатор важности события, допустимые значения перечислены в ENUM_CLASS_MACRO(CEFSeverity, ...)
      */
-    void SetSeverity(const Severity& value) noexcept;
+    void SetSeverity(const CEFSeverity& value) noexcept;
 
     /**
      * @brief Метод для получения идентификатора важности события
      *
      * @return Severity Идентификатор важности события, допустимые значения перечислены в ENUM_CLASS_MACRO(Severity, ...)
      */
-    Severity GetSeverity() const noexcept;
+    CEFSeverity GetSeverity() const noexcept;
 
     /**
      * @brief Метод для добавления пары "ключ-значение", служащей для расширения базового формата события
@@ -269,7 +269,7 @@ private:
      * @brief Важность события
      *
      */
-    Severity severity;
+    CEFSeverity severity;
 
     /**
      * @brief Набор пар "ключ-значение" для расширения базового формата события

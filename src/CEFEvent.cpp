@@ -110,12 +110,12 @@ std::string CEFEvent::GetName(const bool formatString) const noexcept
     return formatString ? EscapeCharactersIfPresent(name, Location::Header) : name;
 }
 
-void CEFEvent::SetSeverity(const Severity& value) noexcept
+void CEFEvent::SetSeverity(const CEFSeverity& value) noexcept
 {
     severity = value;
 }
 
-Severity CEFEvent::GetSeverity() const noexcept
+CEFSeverity CEFEvent::GetSeverity() const noexcept
 {
     return severity;
 }
@@ -232,7 +232,7 @@ bool operator!=(const CEFEvent& left, const CEFEvent& right)
 std::ostream& operator<<(std::ostream& os, const CEFEvent& event)
 {
     const auto prefix = std::string("CEF:") + std::to_string(event.GetFormatVersion());
-    const auto severity = std::string(SeverityToString(event.GetSeverity()));
+    const auto severity = std::string(CEFSeverityToString(event.GetSeverity()));
     const char delimiter = '|';
 
     os << prefix + delimiter;
