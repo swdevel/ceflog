@@ -12,6 +12,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 #include <utility>
 
 #include "CEFLogMacro.h"
