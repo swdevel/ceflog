@@ -8,6 +8,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_library(ceflog STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFEvent.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFEventFactory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFEventStringSerializer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFLog.cpp
 
 )
@@ -18,6 +19,7 @@ if (BUILD_TESTS)
     add_executable(tests
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/CEFEventTest.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/CEFEventFactoryTest.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/CEFEventStringSerializerTest.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
     )
 
