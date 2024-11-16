@@ -31,7 +31,10 @@ endif()
 if (BUILD_EXAMPLES)
     message("Build examples: on")
 
-    # TODO: ...
+    add_executable(generator
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/generator/main.cpp
+    )
+    target_link_libraries(generator ceflog)
 
 else()
     message("Build examples: off")
