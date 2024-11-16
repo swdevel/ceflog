@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.0...3.28)
 
 project(ceflog)
+
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -16,14 +18,21 @@ add_library(ceflog STATIC
 if (BUILD_TESTS)
     message("Build unit tests: on")
 
-    add_executable(tests
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/CEFEventTest.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/CEFEventFactoryTest.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/CEFEventStringSerializerTest.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
+    add_executable(unit-tests
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/unit/CEFEventTest.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/unit/CEFEventFactoryTest.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/unit/CEFEventStringSerializerTest.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/unit/main.cpp
     )
 
-    target_link_libraries(tests ceflog gtest pthread)
+    target_link_libraries(unit-tests ceflog gtest pthread)
+
+    add_executable(integration-tests
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration/main.cpp
+    )
+
+    target_link_libraries(integration-tests ceflog gtest pthread)
+
 else()
     message("Build unit tests: off")
 endif()
