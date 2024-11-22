@@ -11,6 +11,7 @@ add_library(ceflog STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFEvent.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFEventFactory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFEventStringSerializer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/AsyncSyslogClient.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFLog.cpp
 
 )
@@ -28,6 +29,7 @@ if (BUILD_TESTS)
     target_link_libraries(unit-tests ceflog gtest pthread)
 
     add_executable(integration-tests
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration/AsyncSyslogClientTest.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration/main.cpp
     )
 
