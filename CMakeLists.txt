@@ -7,13 +7,23 @@ set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+#
+# Boost::log required boost version >= 1.54.0
+#
+set(Boost_USE_STATIC_LIBS on)
+
+find_package(Boost 1.54.0 REQUIRED COMPONENTS log)
+if (Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+    link_directories(${Boost_LIBRARY_DIRS})
+endif()
+
 add_library(ceflog STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFEvent.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFEventFactory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFEventStringSerializer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/AsyncSyslogClient.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CEFLog.cpp
-
 )
 
 if (BUILD_TESTS)
@@ -33,7 +43,7 @@ if (BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration/main.cpp
     )
 
-    target_link_libraries(integration-tests ceflog gtest pthread)
+    target_link_libraries(integration-tests ceflog Boost::log gtest pthread)
 
 else()
     message("Build unit tests: off")
