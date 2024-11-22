@@ -21,5 +21,18 @@ TEST_F(AsyncSyslogClientTest, ConstructorTest_InvalidParams)
     EXPECT_THROW(AsyncSyslogClient("1", "mockApplicationName"), std::exception);
     EXPECT_THROW(AsyncSyslogClient("127.0.0.1", ""), std::exception);
 
+    EXPECT_THROW(AsyncSyslogClient("127.0.0.1", "mockApplicationName", 0), std::exception);
+
     EXPECT_NO_THROW(AsyncSyslogClient("127.0.0.1", "mockApplicationName"));
+}
+
+TEST_F(AsyncSyslogClientTest, SetMaxTransmittedMessagesPerSecondTest)
+{
+    AsyncSyslogClient client("127.0.0.1", "mockApplicationName");
+
+    EXPECT_THROW(client.SetMaxTransmittedMessagesPerSecond(0), std::exception);
+
+    const uint32_t value = 10000;
+    client.SetMaxTransmittedMessagesPerSecond(value);
+    EXPECT_EQ(client.GetMaxTransmittedMessagesPerSecond(), value);
 }
