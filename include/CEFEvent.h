@@ -80,7 +80,7 @@ public:
 
     // Move constructor
     CEFEvent(CEFEvent&& other) noexcept
-        : formatVersion(std::exchange(other.formatVersion, CEF_EVENT_DEFAULT_FORMAT_VERSION)),
+        : formatVersion(std::exchange(other.formatVersion, CEF_DEFAULT_FORMAT_VERSION)),
           deviceVendor(std::exchange(other.deviceVendor, "")),
           deviceProduct(std::exchange(other.deviceProduct, "")),
           deviceVersion(std::exchange(other.deviceVersion, "")),
