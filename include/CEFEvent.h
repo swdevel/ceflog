@@ -4,22 +4,26 @@
  * @brief Файл содержит описание класса для работы с событиями в формате "Common Event Format (CEF)"
  * @version 0.1
  * @date 2024-11-14
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #pragma once
 
 #include <cstdint>
 #include <string>
-#include <vector>
 #include <utility>
+#include <vector>
 
 #include "CEFLogMacro.h"
 
 ENUM_CLASS_MACRO(CEFSeverity, Undefined, Low, Medium, High, VeryHigh);
 
-#define CEF_EVENT_DEFAULT_FORMAT_VERSION 0
+/**
+ * @brief Версия формата CEF (Common Event Format) по умолчанию
+ *
+ */
+const uint8_t CEF_DEFAULT_FORMAT_VERSION = 0;
 
 /**
  * @brief Структура для описания пары "ключ-значение"
@@ -39,7 +43,7 @@ class CEFEvent
 public:
     ~CEFEvent() = default;
 
-    CEFEvent(const uint8_t formatVersion = CEF_EVENT_DEFAULT_FORMAT_VERSION,
+    CEFEvent(const uint8_t formatVersion = CEF_DEFAULT_FORMAT_VERSION,
              const std::string& deviceVendor = "",
              const std::string& deviceProduct = "",
              const std::string& deviceVersion = "",
