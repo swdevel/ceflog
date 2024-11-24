@@ -2,9 +2,13 @@
 
 #include <boost/asio.hpp>
 
+#include <boost/log/attributes.hpp>
+#include <boost/log/expressions.hpp>
+
 #include "AsyncSyslogClient.h"
 
 using namespace boost::asio;
+using namespace boost::log;
 
 AsyncSyslogClient::AsyncSyslogClient(const std::string& address,
                                      const std::string& applicationName,
@@ -22,6 +26,19 @@ AsyncSyslogClient::AsyncSyslogClient(const std::string& address,
         throw std::runtime_error("failed to create syslog client, cause max transmitted messages per second is equal to zero");
     }
 
+    CreateSyslogSink();
+
+    SetFormatter(applicationName);
+
+    SetSeverityMapper();
+
+    SetRemoteAddress(address);
+
+    AddSyslogSink();
+}
+
+AsyncSyslogClient::~AsyncSyslogClient()
+{
     // TODO: ...
 }
 
@@ -37,4 +54,72 @@ void AsyncSyslogClient::SetMaxTransmittedMessagesPerSecond(const uint32_t value)
 uint32_t AsyncSyslogClient::GetMaxTransmittedMessagesPerSecond() const noexcept
 {
     return maxTransmittedMessagesPerSecond;
+}
+
+void AsyncSyslogClient::PushMessage(const SyslogSeverity level, const std::string& message)
+{
+    if (sink == nullptr) {
+        throw std::runtime_error("syslog sink hasn't been created");
+    }
+
+    BOOST_LOG_SEV(logger, level) << message;
+}
+
+void AsyncSyslogClient::CreateSyslogSink()
+{
+    if (sink == nullptr) {
+        sink = boost::make_shared<sink_t>();
+    }
+}
+
+void AsyncSyslogClient::SetFormatter(const std::string& applicationName)
+{
+    if (sink == nullptr) {
+        throw std::runtime_error("syslog sink hasn't been created");
+    }
+
+    const std::string attribute("name");
+
+    sink->set_formatter(
+        expressions::format("%1%: %2%") % expressions::attr<std::string>(attribute) % expressions::message);
+
+    core::get()->add_global_attribute(attribute, attributes::constant<std::string>(applicationName));
+}
+
+void AsyncSyslogClient::SetSeverityMapper()
+{
+    if (sink == nullptr) {
+        throw std::runtime_error("syslog sink hasn't been created");
+    }
+
+    sinks::syslog::custom_severity_mapping<SyslogSeverity> mapper("Severity");
+
+    mapper[SyslogSeverity::Emergency] = sinks::syslog::emergency;
+    mapper[SyslogSeverity::Alert] = sinks::syslog::alert;
+    mapper[SyslogSeverity::Critical] = sinks::syslog::critical;
+    mapper[SyslogSeverity::Error] = sinks::syslog::error;
+    mapper[SyslogSeverity::Warning] = sinks::syslog::warning;
+    mapper[SyslogSeverity::Notice] = sinks::syslog::notice;
+    mapper[SyslogSeverity::Info] = sinks::syslog::info;
+    mapper[SyslogSeverity::Debug] = sinks::syslog::debug;
+
+    sink->locked_backend()->set_severity_mapper(mapper);
+}
+
+void AsyncSyslogClient::SetRemoteAddress(const std::string& address)
+{
+    if (sink == nullptr) {
+        throw std::runtime_error("syslog sink hasn't been created");
+    }
+
+    sink->locked_backend()->set_target_address(address);
+}
+
+void AsyncSyslogClient::AddSyslogSink()
+{
+    if (sink == nullptr) {
+        throw std::runtime_error("syslog sink hasn't been created");
+    }
+
+    core::get()->add_sink(sink);
 }
