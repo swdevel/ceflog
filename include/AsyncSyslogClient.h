@@ -8,16 +8,17 @@
 
 #include <boost/shared_ptr.hpp>
 
-enum class SyslogSeverity {
-    Emergency,
-    Alert,
-    Critical,
-    Error,
-    Warning,
-    Notice,
-    Info,
-    Debug,
-};
+#include "CEFLogMacro.h"
+
+ENUM_CLASS_MACRO(SyslogSeverity,
+                 Emergency,
+                 Alert,
+                 Critical,
+                 Error,
+                 Warning,
+                 Notice,
+                 Info,
+                 Debug, );
 
 /**
  * @brief Значение по умолчанию для максимального количества передаваемых в секунду сообщений
