@@ -29,10 +29,27 @@ const uint32_t DEFAULT_MAX_TRANSMITTED_MESSAGES_PER_SECOND = 100;
 class AsyncSyslogClient
 {
 public:
+    // Constructor
+    AsyncSyslogClient() = delete;
+
+    // Constructor
     AsyncSyslogClient(const std::string& address,
                       const std::string& applicationName,
                       const uint32_t maxTransmittedMessagesPerSecond = DEFAULT_MAX_TRANSMITTED_MESSAGES_PER_SECOND);
 
+    // Copy constructor
+    AsyncSyslogClient(const AsyncSyslogClient& other) = delete;
+
+    // Copy assignment
+    AsyncSyslogClient& operator=(const AsyncSyslogClient& other) = delete;
+
+    // Move constructor
+    AsyncSyslogClient(AsyncSyslogClient&& other) noexcept = delete;
+
+    // Move assignment
+    AsyncSyslogClient& operator=(AsyncSyslogClient&& other) noexcept = delete;
+
+    // Destructor
     ~AsyncSyslogClient();
 
     void SetMaxTransmittedMessagesPerSecond(const uint32_t value);
