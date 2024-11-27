@@ -39,7 +39,7 @@ AsyncSyslogClient::AsyncSyslogClient(const std::string& address,
 
 AsyncSyslogClient::~AsyncSyslogClient()
 {
-    // TODO: ...
+    RemoveSyslogSink();
 }
 
 void AsyncSyslogClient::SetMaxTransmittedMessagesPerSecond(const uint32_t value)
@@ -122,4 +122,13 @@ void AsyncSyslogClient::AddSyslogSink()
     }
 
     core::get()->add_sink(sink);
+}
+
+void AsyncSyslogClient::RemoveSyslogSink()
+{
+    if (sink == nullptr) {
+        throw std::runtime_error("syslog sink hasn't been created");
+    }
+
+    core::get()->remove_sink(sink);
 }

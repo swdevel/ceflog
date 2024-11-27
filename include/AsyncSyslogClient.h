@@ -52,6 +52,8 @@ private:
 
     void AddSyslogSink();
 
+    void RemoveSyslogSink();
+
 private:
     using sink_t = boost::log::sinks::synchronous_sink<boost::log::sinks::syslog_backend>;
 
