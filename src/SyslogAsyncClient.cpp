@@ -5,12 +5,12 @@
 #include <boost/log/attributes.hpp>
 #include <boost/log/expressions.hpp>
 
-#include "AsyncSyslogClient.h"
+#include "SyslogAsyncClient.h"
 
 using namespace boost::asio;
 using namespace boost::log;
 
-AsyncSyslogClient::AsyncSyslogClient(const std::string& address,
+SyslogAsyncClient::SyslogAsyncClient(const std::string& address,
                                      const std::string& applicationName,
                                      const uint32_t maxTransmittedMessagesPerSecond)
 {
@@ -37,12 +37,12 @@ AsyncSyslogClient::AsyncSyslogClient(const std::string& address,
     AddSyslogSink();
 }
 
-AsyncSyslogClient::~AsyncSyslogClient()
+SyslogAsyncClient::~SyslogAsyncClient()
 {
     RemoveSyslogSink();
 }
 
-void AsyncSyslogClient::SetMaxTransmittedMessagesPerSecond(const uint32_t value)
+void SyslogAsyncClient::SetMaxTransmittedMessagesPerSecond(const uint32_t value)
 {
     if (value == 0) {
         throw std::runtime_error("failed to set new value, cause param is equal to zero");
@@ -51,12 +51,12 @@ void AsyncSyslogClient::SetMaxTransmittedMessagesPerSecond(const uint32_t value)
     maxTransmittedMessagesPerSecond = value;
 }
 
-uint32_t AsyncSyslogClient::GetMaxTransmittedMessagesPerSecond() const noexcept
+uint32_t SyslogAsyncClient::GetMaxTransmittedMessagesPerSecond() const noexcept
 {
     return maxTransmittedMessagesPerSecond;
 }
 
-void AsyncSyslogClient::PushMessage(const SyslogSeverity level, const std::string& message)
+void SyslogAsyncClient::PushMessage(const SyslogSeverity level, const std::string& message)
 {
     if (sink == nullptr) {
         throw std::runtime_error("syslog sink hasn't been created");
@@ -65,14 +65,14 @@ void AsyncSyslogClient::PushMessage(const SyslogSeverity level, const std::strin
     BOOST_LOG_SEV(logger, level) << message;
 }
 
-void AsyncSyslogClient::CreateSyslogSink()
+void SyslogAsyncClient::CreateSyslogSink()
 {
     if (sink == nullptr) {
         sink = boost::make_shared<sink_t>();
     }
 }
 
-void AsyncSyslogClient::SetFormatter(const std::string& applicationName)
+void SyslogAsyncClient::SetFormatter(const std::string& applicationName)
 {
     if (sink == nullptr) {
         throw std::runtime_error("syslog sink hasn't been created");
@@ -86,7 +86,7 @@ void AsyncSyslogClient::SetFormatter(const std::string& applicationName)
     core::get()->add_global_attribute(attribute, attributes::constant<std::string>(applicationName));
 }
 
-void AsyncSyslogClient::SetSeverityMapper()
+void SyslogAsyncClient::SetSeverityMapper()
 {
     if (sink == nullptr) {
         throw std::runtime_error("syslog sink hasn't been created");
@@ -106,7 +106,7 @@ void AsyncSyslogClient::SetSeverityMapper()
     sink->locked_backend()->set_severity_mapper(mapper);
 }
 
-void AsyncSyslogClient::SetRemoteAddress(const std::string& address)
+void SyslogAsyncClient::SetRemoteAddress(const std::string& address)
 {
     if (sink == nullptr) {
         throw std::runtime_error("syslog sink hasn't been created");
@@ -115,7 +115,7 @@ void AsyncSyslogClient::SetRemoteAddress(const std::string& address)
     sink->locked_backend()->set_target_address(address);
 }
 
-void AsyncSyslogClient::AddSyslogSink()
+void SyslogAsyncClient::AddSyslogSink()
 {
     if (sink == nullptr) {
         throw std::runtime_error("syslog sink hasn't been created");
@@ -124,7 +124,7 @@ void AsyncSyslogClient::AddSyslogSink()
     core::get()->add_sink(sink);
 }
 
-void AsyncSyslogClient::RemoveSyslogSink()
+void SyslogAsyncClient::RemoveSyslogSink()
 {
     if (sink == nullptr) {
         throw std::runtime_error("syslog sink hasn't been created");

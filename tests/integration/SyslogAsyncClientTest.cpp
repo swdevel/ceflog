@@ -6,12 +6,12 @@
 
 #include "gtest/gtest.h"
 
-#include "AsyncSyslogClient.h"
+#include "SyslogAsyncClient.h"
 
-class AsyncSyslogClientTest : public testing::Test
+class SyslogAsyncClientTest : public testing::Test
 {
 protected:
-    AsyncSyslogClientTest()
+    SyslogAsyncClientTest()
         : syslogPath("/var/log/syslog")
     {
     }
@@ -36,7 +36,7 @@ protected:
 
     void SendMockMessageWithSpecifiedSeverity(const SyslogSeverity severity)
     {
-        AsyncSyslogClient client("127.0.0.1", "mockApplicationName");
+        SyslogAsyncClient client("127.0.0.1", "mockApplicationName");
 
         const auto message = GetTime() +
                              std::string(" Mock message with syslog severity level = ") +
@@ -58,21 +58,21 @@ protected:
     std::string syslogPath;
 };
 
-TEST_F(AsyncSyslogClientTest, ConstructorTest_InvalidParams)
+TEST_F(SyslogAsyncClientTest, ConstructorTest_InvalidParams)
 {
-    EXPECT_THROW(AsyncSyslogClient("127.0.0", "mockApplicationName"), std::exception);
-    EXPECT_THROW(AsyncSyslogClient("::1", "mockApplicationName"), std::exception);
-    EXPECT_THROW(AsyncSyslogClient("1", "mockApplicationName"), std::exception);
-    EXPECT_THROW(AsyncSyslogClient("127.0.0.1", ""), std::exception);
+    EXPECT_THROW(SyslogAsyncClient("127.0.0", "mockApplicationName"), std::exception);
+    EXPECT_THROW(SyslogAsyncClient("::1", "mockApplicationName"), std::exception);
+    EXPECT_THROW(SyslogAsyncClient("1", "mockApplicationName"), std::exception);
+    EXPECT_THROW(SyslogAsyncClient("127.0.0.1", ""), std::exception);
 
-    EXPECT_THROW(AsyncSyslogClient("127.0.0.1", "mockApplicationName", 0), std::exception);
+    EXPECT_THROW(SyslogAsyncClient("127.0.0.1", "mockApplicationName", 0), std::exception);
 
-    EXPECT_NO_THROW(AsyncSyslogClient("127.0.0.1", "mockApplicationName"));
+    EXPECT_NO_THROW(SyslogAsyncClient("127.0.0.1", "mockApplicationName"));
 }
 
-TEST_F(AsyncSyslogClientTest, SetMaxTransmittedMessagesPerSecondTest)
+TEST_F(SyslogAsyncClientTest, SetMaxTransmittedMessagesPerSecondTest)
 {
-    AsyncSyslogClient client("127.0.0.1", "mockApplicationName");
+    SyslogAsyncClient client("127.0.0.1", "mockApplicationName");
 
     EXPECT_THROW(client.SetMaxTransmittedMessagesPerSecond(0), std::exception);
 
@@ -84,43 +84,43 @@ TEST_F(AsyncSyslogClientTest, SetMaxTransmittedMessagesPerSecondTest)
 // FIXME: apparmor="DENIED" operation="open" class="file"
 
 #if 0
-TEST_F(AsyncSyslogClientTest, SendEmergencyMessageTest)
+TEST_F(SyslogAsyncClientTest, SendEmergencyMessageTest)
 {
     SendMockMessageWithSpecifiedSeverity(SyslogSeverity::Emergency);
 }
 
-TEST_F(AsyncSyslogClientTest, SendAlertMessageTest)
+TEST_F(SyslogAsyncClientTest, SendAlertMessageTest)
 {
     SendMockMessageWithSpecifiedSeverity(SyslogSeverity::Alert);
 }
 #endif
 
-TEST_F(AsyncSyslogClientTest, SendCriticalMessageTest)
+TEST_F(SyslogAsyncClientTest, SendCriticalMessageTest)
 {
     SendMockMessageWithSpecifiedSeverity(SyslogSeverity::Critical);
 }
 
-TEST_F(AsyncSyslogClientTest, SendErrorMessageTest)
+TEST_F(SyslogAsyncClientTest, SendErrorMessageTest)
 {
     SendMockMessageWithSpecifiedSeverity(SyslogSeverity::Error);
 }
 
-TEST_F(AsyncSyslogClientTest, SendWarningMessageTest)
+TEST_F(SyslogAsyncClientTest, SendWarningMessageTest)
 {
     SendMockMessageWithSpecifiedSeverity(SyslogSeverity::Warning);
 }
 
-TEST_F(AsyncSyslogClientTest, SendNoticeMessageTest)
+TEST_F(SyslogAsyncClientTest, SendNoticeMessageTest)
 {
     SendMockMessageWithSpecifiedSeverity(SyslogSeverity::Notice);
 }
 
-TEST_F(AsyncSyslogClientTest, SendInfoMessageTest)
+TEST_F(SyslogAsyncClientTest, SendInfoMessageTest)
 {
     SendMockMessageWithSpecifiedSeverity(SyslogSeverity::Info);
 }
 
-TEST_F(AsyncSyslogClientTest, SendDebugMessageTest)
+TEST_F(SyslogAsyncClientTest, SendDebugMessageTest)
 {
     SendMockMessageWithSpecifiedSeverity(SyslogSeverity::Debug);
 }

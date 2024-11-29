@@ -26,31 +26,31 @@ ENUM_CLASS_MACRO(SyslogSeverity,
  */
 const uint32_t DEFAULT_MAX_TRANSMITTED_MESSAGES_PER_SECOND = 100;
 
-class AsyncSyslogClient
+class SyslogAsyncClient
 {
 public:
     // Constructor
-    AsyncSyslogClient() = delete;
+    SyslogAsyncClient() = delete;
 
     // Constructor
-    AsyncSyslogClient(const std::string& address,
+    SyslogAsyncClient(const std::string& address,
                       const std::string& applicationName,
                       const uint32_t maxTransmittedMessagesPerSecond = DEFAULT_MAX_TRANSMITTED_MESSAGES_PER_SECOND);
 
     // Copy constructor
-    AsyncSyslogClient(const AsyncSyslogClient& other) = delete;
+    SyslogAsyncClient(const SyslogAsyncClient& other) = delete;
 
     // Copy assignment
-    AsyncSyslogClient& operator=(const AsyncSyslogClient& other) = delete;
+    SyslogAsyncClient& operator=(const SyslogAsyncClient& other) = delete;
 
     // Move constructor
-    AsyncSyslogClient(AsyncSyslogClient&& other) noexcept = delete;
+    SyslogAsyncClient(SyslogAsyncClient&& other) noexcept = delete;
 
     // Move assignment
-    AsyncSyslogClient& operator=(AsyncSyslogClient&& other) noexcept = delete;
+    SyslogAsyncClient& operator=(SyslogAsyncClient&& other) noexcept = delete;
 
     // Destructor
-    ~AsyncSyslogClient();
+    ~SyslogAsyncClient();
 
     void SetMaxTransmittedMessagesPerSecond(const uint32_t value);
 
