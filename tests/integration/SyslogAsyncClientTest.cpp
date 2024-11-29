@@ -7,6 +7,7 @@
 #include "gtest/gtest.h"
 
 #include "SyslogAsyncClient.h"
+#include "SyslogBoostClientBackend.h"
 
 class SyslogAsyncClientTest : public testing::Test
 {
@@ -36,7 +37,10 @@ protected:
 
     void SendMockMessageWithSpecifiedSeverity(const SyslogSeverity severity)
     {
-        SyslogAsyncClient client("127.0.0.1", "mockApplicationName");
+        auto backend = std::make_shared<SyslogBoostClientBackend>("127.0.0.1",
+                                                                  "mockApplicationName");
+
+        SyslogAsyncClient client(backend);
 
         const auto message = GetTime() +
                              std::string(" Mock message with syslog severity level = ") +
@@ -60,19 +64,16 @@ protected:
 
 TEST_F(SyslogAsyncClientTest, ConstructorTest_InvalidParams)
 {
-    EXPECT_THROW(SyslogAsyncClient("127.0.0", "mockApplicationName"), std::exception);
-    EXPECT_THROW(SyslogAsyncClient("::1", "mockApplicationName"), std::exception);
-    EXPECT_THROW(SyslogAsyncClient("1", "mockApplicationName"), std::exception);
-    EXPECT_THROW(SyslogAsyncClient("127.0.0.1", ""), std::exception);
+    auto backend = std::make_shared<SyslogBoostClientBackend>("127.0.0.1",
+                                                              "mockApplicationName");
 
-    EXPECT_THROW(SyslogAsyncClient("127.0.0.1", "mockApplicationName", 0), std::exception);
-
-    EXPECT_NO_THROW(SyslogAsyncClient("127.0.0.1", "mockApplicationName"));
+    EXPECT_THROW(SyslogAsyncClient(backend, 0), std::exception);
 }
 
 TEST_F(SyslogAsyncClientTest, SetMaxTransmittedMessagesPerSecondTest)
 {
-    SyslogAsyncClient client("127.0.0.1", "mockApplicationName");
+    SyslogAsyncClient client(
+        std::make_shared<SyslogBoostClientBackend>("127.0.0.1", "mockApplicationName"));
 
     EXPECT_THROW(client.SetMaxTransmittedMessagesPerSecond(0), std::exception);
 
