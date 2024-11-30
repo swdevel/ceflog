@@ -14,7 +14,7 @@ uint32_t SyslogAsyncClient::GetMaxTransmittedMessagesPerSecond() const noexcept
     return maxTransmittedMessagesPerSecond;
 }
 
-void SyslogAsyncClient::PushMessage(const SyslogSeverity level, const std::string& message)
+void SyslogAsyncClient::PushMessage(const SyslogSeverity severity, const std::string& message)
 {
-    backend->LogMessage(level, message);
+    queue.Push({severity, message});
 }

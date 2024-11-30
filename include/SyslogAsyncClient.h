@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "SelfConsumingQueue.h"
 #include "SyslogBoostClientBackend.h"
 
 /**
@@ -33,10 +34,21 @@ public:
 
     uint32_t GetMaxTransmittedMessagesPerSecond() const noexcept;
 
-    void PushMessage(const SyslogSeverity level, const std::string& message);
+    void PushMessage(const SyslogSeverity severity, const std::string& message);
+
+private:
+    struct syslog_message_t {
+        SyslogSeverity severity;
+        std::string message;
+    };
 
 private:
     std::shared_ptr<SyslogAbstractClientBackend> backend;
+
+    SelfConsumingQueue<syslog_message_t> queue{
+        [this](syslog_message_t& message) -> void {
+            backend->LogMessage(message.severity, message.message);
+        }};
 
     uint32_t maxTransmittedMessagesPerSecond;
 };
