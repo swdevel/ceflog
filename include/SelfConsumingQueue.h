@@ -34,11 +34,7 @@ public:
 
     void Push(const T& element)
     {
-        {
-            std::unique_lock<std::mutex> lock(mutex);
-            input.push(element);
-        }
-
+        input.push(element);
         available.notify_one();
     }
 
@@ -51,14 +47,12 @@ public:
     {
         while (running) {
 
-            {
                 std::unique_lock<std::mutex> lock(mutex);
                 if (input.empty()) {
                     available.wait(lock, [&]() { return !input.empty() || !running; });
                 }
 
                 output.swap(input);
-            }
 
             while (!output.empty()) {
                 callback(output.front());
