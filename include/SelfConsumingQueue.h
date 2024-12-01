@@ -47,12 +47,12 @@ public:
     {
         while (running) {
 
-                std::unique_lock<std::mutex> lock(mutex);
-                if (input.empty()) {
-                    available.wait(lock, [&]() { return !input.empty() || !running; });
-                }
+            std::unique_lock<std::mutex> lock(mutex);
+            if (input.empty()) {
+                available.wait(lock, [&]() { return !input.empty() || !running; });
+            }
 
-                output.swap(input);
+            output.swap(input);
 
             while (!output.empty()) {
                 callback(output.front());
