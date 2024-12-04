@@ -181,7 +181,22 @@ $> sudo systemctl status rsyslog
 
 ### Запуск интеграционных тестов
 
-TODO:
+Файл "integration-tests" служит для запуска интеграционного тестирования, результат которого выводится в лог:
+
+~~~
+$> ./integration-tests
+[==========] Running 9 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 9 tests from SyslogAsyncClientTest
+[ RUN      ] SyslogAsyncClientTest.ConstructorTest_InvalidParams
+[       OK ] SyslogAsyncClientTest.ConstructorTest_InvalidParams (0 ms)
+[ RUN      ] SyslogAsyncClientTest.SetMaxTransmittedMessagesPerSecondTest
+[       OK ] SyslogAsyncClientTest.SetMaxTransmittedMessagesPerSecondTest (0 ms)
+...
+[----------] Global test environment tear-down
+[==========] 9 tests from 1 test suite ran. (3765 ms total)
+[  PASSED  ] 9 tests.
+~~~
 
 ## Примеры
 
