@@ -24,6 +24,8 @@ public:
 
     virtual void LogMessage(const SyslogSeverity severity, const std::string& message) = 0;
 
+    virtual ~SyslogAbstractClientBackend() = default;
+
 protected:
     std::string syslogServerAddress;
 

@@ -7,4 +7,6 @@ class CEFEventAbstractSerializer
 {
 protected:
     virtual T Serialize(const CEFEvent& event) const = 0;
+
+    virtual ~CEFEventAbstractSerializer() = default;
 };
