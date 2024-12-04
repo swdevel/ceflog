@@ -125,3 +125,38 @@ TEST_F(SyslogAsyncClientTest, SendDebugMessageTest)
 {
     SendMockMessageWithSpecifiedSeverity(SyslogSeverity::Debug);
 }
+
+TEST_F(SyslogAsyncClientTest, MaxTransmittedMessagesPerSecondTest)
+{
+    auto backend = std::make_shared<SyslogBoostClientBackend>("127.0.0.1",
+                                                              "mockApplicationName");
+
+    // Ограничение передачи: не более 1 сообщения в секунду
+    const uint32_t maxTransmittedMessagesPerSecond = 1;
+
+    SyslogAsyncClient client(backend, maxTransmittedMessagesPerSecond);
+
+    std::vector<std::string> messages;
+    messages.emplace_back(GetTime() + std::string(" Mock message [1]"));
+    messages.emplace_back(GetTime() + std::string(" Mock message [2]"));
+    messages.emplace_back(GetTime() + std::string(" Mock message [3]"));
+
+    for (const auto& message : messages) {
+        client.PushMessage(SyslogSeverity::Info, message);
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    for (const auto& message : messages) {
+
+        // Чтение последней строки из файла "/var/log/syslog"
+        std::ifstream syslogFile{syslogPath};
+        auto lastString = GetLastStringFromFile(syslogFile);
+
+        // Поиск отправленного сообщения в прочитанной строке
+        EXPECT_TRUE(lastString.find(message) != std::string::npos);
+
+        // Ожидание в 1 секунду до чтения следующий строки
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+}
