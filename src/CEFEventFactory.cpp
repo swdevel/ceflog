@@ -1,5 +1,8 @@
 #include "CEFEventFactory.h"
 
+namespace ceflog::event
+{
+
 CEFEvent CEFEventFactory::CreateEvent(const std::string& deviceEventClassId,
                                       const std::string& name,
                                       const CEFSeverity severity,
@@ -14,3 +17,5 @@ CEFEvent CEFEventFactory::CreateEvent(const std::string& deviceEventClassId,
                     severity,
                     extensions);
 }
+
+} // namespace ceflog::event

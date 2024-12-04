@@ -2,6 +2,8 @@
 
 #include "CEFEventStringSerializer.h"
 
+using namespace ceflog::event;
+
 TEST(CEFEventStringSerializerTest, SerializationTest)
 {
     const uint8_t mockFormatVersion = 1;

@@ -1,5 +1,8 @@
 #include "SyslogAsyncClient.h"
 
+namespace ceflog::syslog
+{
+
 void SyslogAsyncClient::SetMaxTransmittedMessagesPerSecond(const uint32_t value)
 {
     if (value == 0) {
@@ -18,3 +21,5 @@ void SyslogAsyncClient::PushMessage(const SyslogSeverity severity, const std::st
 {
     queue->Push({severity, message});
 }
+
+} // namespace ceflog::syslog

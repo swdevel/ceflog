@@ -15,6 +15,9 @@
 #include <utility>
 #include <vector>
 
+namespace ceflog::event
+{
+
 #include "EnumClassMacro.h"
 
 ENUM_CLASS_MACRO(CEFSeverity, Undefined, Low, Medium, High, VeryHigh);
@@ -288,3 +291,5 @@ bool operator==(const CEFEvent& left, const CEFEvent& right);
 bool operator!=(const CEFEvent& left, const CEFEvent& right);
 
 std::ostream& operator<<(std::ostream& os, const CEFEvent& event);
+
+} // namespace ceflog::event

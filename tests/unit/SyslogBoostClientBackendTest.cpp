@@ -2,6 +2,8 @@
 
 #include "SyslogBoostClientBackend.h"
 
+using namespace ceflog::syslog;
+
 TEST(SyslogBoostClientBackend, ConstructorTest_InvalidParams)
 {
     EXPECT_THROW(SyslogBoostClientBackend("127.0.0", "mockApplicationName"), std::exception);

@@ -6,6 +6,9 @@
 #include "SelfConsumingQueue.h"
 #include "SyslogBoostClientBackend.h"
 
+namespace ceflog::syslog
+{
+
 /**
  * @brief Значение по умолчанию для максимального количества передаваемых в секунду сообщений
  *
@@ -54,3 +57,5 @@ private:
 
     std::shared_ptr<SelfConsumingQueue<syslog_message_t>> queue;
 };
+
+} // namespace ceflog::syslog

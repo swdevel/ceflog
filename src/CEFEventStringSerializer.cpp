@@ -2,6 +2,9 @@
 
 #include "CEFEventStringSerializer.h"
 
+namespace ceflog::event
+{
+
 std::string CEFEventStringSerializer::Serialize(const CEFEvent& event) const
 {
     std::ostringstream oss;
@@ -9,3 +12,5 @@ std::string CEFEventStringSerializer::Serialize(const CEFEvent& event) const
 
     return oss.str();
 }
+
+} // namespace ceflog::event

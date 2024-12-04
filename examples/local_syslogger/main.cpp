@@ -6,12 +6,12 @@
  * Инструкция по установке и настройке описана в файле README.md.
  * Результат работы демонстрационного примера можно увидеть в файле "/var/log/syslog" при помощи команды:
  * $> tail -n 100 /var/log/syslog
- * 
+ *
  * @version 0.1
  * @date 2024-12-04
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 
 #include "CEFLog.h"
@@ -28,6 +28,8 @@ std::string timestamp()
 
 int main()
 {
+    using namespace ceflog::syslog;
+
     auto sysloggerBackend = std::make_shared<SyslogBoostClientBackend>("127.0.0.1",
                                                                        "syslogger");
     SyslogAsyncClient sysloggerClient(sysloggerBackend);

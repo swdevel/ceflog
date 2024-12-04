@@ -2,6 +2,9 @@
 
 #include "EnumClassMacro.h"
 
+namespace ceflog::syslog
+{
+
 ENUM_CLASS_MACRO(SyslogSeverity,
                  Emergency,
                  Alert,
@@ -11,3 +14,5 @@ ENUM_CLASS_MACRO(SyslogSeverity,
                  Notice,
                  Info,
                  Debug);
+
+} // namespace ceflog::syslog

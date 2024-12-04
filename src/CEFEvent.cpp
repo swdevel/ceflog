@@ -4,13 +4,16 @@
  * @brief Файл содержит реализацию класса для работы с событиями в формате "Common Event Format (CEF)"
  * @version 0.1
  * @date 2024-11-14
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #include <boost/algorithm/string.hpp>
 
 #include "CEFEvent.h"
+
+namespace ceflog::event
+{
 
 // Copy assignment
 CEFEvent& CEFEvent::operator=(const CEFEvent& other)
@@ -249,3 +252,5 @@ std::ostream& operator<<(std::ostream& os, const CEFEvent& event)
 
     return os;
 }
+
+} // namespace ceflog::event

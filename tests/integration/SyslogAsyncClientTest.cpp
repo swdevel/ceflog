@@ -9,6 +9,8 @@
 #include "SyslogAsyncClient.h"
 #include "SyslogBoostClientBackend.h"
 
+using namespace ceflog::syslog;
+
 class SyslogAsyncClientTest : public testing::Test
 {
 protected:

@@ -2,6 +2,9 @@
 
 #include "CEFEvent.h"
 
+namespace ceflog::event
+{
+
 template <typename T>
 class CEFEventAbstractSerializer
 {
@@ -10,3 +13,5 @@ protected:
 
     virtual ~CEFEventAbstractSerializer() = default;
 };
+
+} // namespace ceflog::event

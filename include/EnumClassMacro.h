@@ -4,13 +4,16 @@
  * @brief Файл содержит макросы для определения перечислений enum class с функцией преобразования значений в строковое представление
  * @version 0.1
  * @date 2024-11-14
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #pragma once
 
 #include <boost/preprocessor.hpp>
+
+namespace ceflog::common
+{
 
 #define PROCESS_ONE_ELEMENT(r, unused, idx, elem) \
     BOOST_PP_COMMA_IF(idx)                        \
@@ -27,3 +30,5 @@
     {                                                                      \
         return name##Strings[static_cast<int>(value)];                     \
     }
+
+} // namespace ceflog::common

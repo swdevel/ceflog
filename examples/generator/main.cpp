@@ -7,6 +7,7 @@
 int main()
 {
     using namespace std::chrono_literals;
+    using namespace ceflog::event;
 
     const uint8_t formatVersion = 0;
     const std::string deviceVendor = "Security";

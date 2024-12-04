@@ -1,9 +1,12 @@
 #pragma once
 
-#include <string>
 #include <stdexcept>
+#include <string>
 
 #include "SyslogSeverity.h"
+
+namespace ceflog::syslog
+{
 
 class SyslogAbstractClientBackend
 {
@@ -31,3 +34,5 @@ protected:
 
     std::string applicationName;
 };
+
+} // namespace ceflog::syslog

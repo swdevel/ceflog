@@ -8,6 +8,9 @@
 #include <queue>
 #include <thread>
 
+namespace ceflog::syslog
+{
+
 template <typename T>
 class SelfConsumingQueue
 {
@@ -112,3 +115,5 @@ private:
 
     uint32_t limit;
 };
+
+} // namespace ceflog::syslog

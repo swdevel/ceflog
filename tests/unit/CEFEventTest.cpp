@@ -2,6 +2,8 @@
 
 #include "CEFEvent.h"
 
+using namespace ceflog::event;
+
 class CEFEventTest : public testing::Test
 {
 public:

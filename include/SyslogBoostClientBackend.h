@@ -10,6 +10,9 @@
 
 #include "SyslogAbstractClientBackend.h"
 
+namespace ceflog::syslog
+{
+
 class SyslogBoostClientBackend : public SyslogAbstractClientBackend
 {
 public:
@@ -51,3 +54,5 @@ private:
 
     logger_t logger;
 };
+
+} // namespace ceflog::syslog

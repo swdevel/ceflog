@@ -3,6 +3,9 @@
 
 #include "SyslogBoostClientBackend.h"
 
+namespace ceflog::syslog
+{
+
 using namespace boost::log;
 
 void SyslogBoostClientBackend::LogMessage(const SyslogSeverity severity, const std::string& message)
@@ -56,3 +59,5 @@ void SyslogBoostClientBackend::SetSyslogServerAddress()
 {
     sink->locked_backend()->set_target_address(syslogServerAddress);
 }
+
+} // namespace ceflog::syslog

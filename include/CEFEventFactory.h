@@ -2,6 +2,9 @@
 
 #include "CEFEvent.h"
 
+namespace ceflog::event
+{
+
 class CEFEventFactory
 {
 public:
@@ -30,3 +33,5 @@ private:
 
     std::string deviceVersion;
 };
+
+} // namespace ceflog::event

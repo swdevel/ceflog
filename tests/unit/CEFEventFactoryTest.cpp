@@ -2,6 +2,8 @@
 
 #include "CEFEventFactory.h"
 
+using namespace ceflog::event;
+
 TEST(CEFEventFactoryTest, CreateEventTest)
 {
     const uint8_t mockFormatVersion = 1;
