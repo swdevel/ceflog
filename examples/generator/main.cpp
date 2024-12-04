@@ -2,8 +2,7 @@
 #include <iostream>
 #include <thread>
 
-#include <CEFEventFactory.h>
-#include <CEFEventStringSerializer.h>
+#include "CEFLog.h"
 
 int main()
 {

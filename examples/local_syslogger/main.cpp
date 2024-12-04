@@ -14,8 +14,7 @@
  * 
  */
 
-#include "SyslogAsyncClient.h"
-#include "SyslogBoostClientBackend.h"
+#include "CEFLog.h"
 
 std::string timestamp()
 {
