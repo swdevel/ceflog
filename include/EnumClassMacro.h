@@ -1,5 +1,5 @@
 /**
- * @file CEFLogMacro.h
+ * @file EnumClassMacro.h
  * @author Alexander Borisov
  * @brief Файл содержит макросы для определения перечислений enum class с функцией преобразования значений в строковое представление
  * @version 0.1

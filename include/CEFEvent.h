@@ -15,7 +15,7 @@
 #include <utility>
 #include <vector>
 
-#include "CEFLogMacro.h"
+#include "EnumClassMacro.h"
 
 ENUM_CLASS_MACRO(CEFSeverity, Undefined, Low, Medium, High, VeryHigh);
 

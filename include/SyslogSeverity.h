@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CEFLogMacro.h"
+#include "EnumClassMacro.h"
 
 ENUM_CLASS_MACRO(SyslogSeverity,
                  Emergency,
