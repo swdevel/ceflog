@@ -11,6 +11,8 @@ template <typename T>
 class SelfConsumingQueue
 {
 public:
+    SelfConsumingQueue() = delete;
+
     SelfConsumingQueue(const std::function<void(T&)>& callback)
         : callback(callback),
           running(true)
@@ -32,16 +34,16 @@ public:
         }
     }
 
+    SelfConsumingQueue(const SelfConsumingQueue& copy) = delete;
+    SelfConsumingQueue& operator=(const SelfConsumingQueue& copy) = delete;
+    SelfConsumingQueue(SelfConsumingQueue&& move) noexcept = delete;
+    SelfConsumingQueue& operator=(SelfConsumingQueue&& move) noexcept = delete;
+
     void Push(const T& element)
     {
         input.push(element);
         available.notify_one();
     }
-
-    SelfConsumingQueue(const SelfConsumingQueue& copy) = delete;
-    SelfConsumingQueue& operator=(const SelfConsumingQueue& copy) = delete;
-    SelfConsumingQueue(SelfConsumingQueue&& move) noexcept = delete;
-    SelfConsumingQueue& operator=(SelfConsumingQueue&& move) noexcept = delete;
 
     void Worker()
     {
