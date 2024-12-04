@@ -59,6 +59,11 @@ if (BUILD_EXAMPLES)
     )
     target_link_libraries(generator ceflog)
 
+    add_executable(local_syslogger
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/local_syslogger/main.cpp
+    )
+    target_link_libraries(local_syslogger ceflog Boost::log)
+
 else()
     message("Build examples: off")
 endif()
