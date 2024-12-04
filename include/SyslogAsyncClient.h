@@ -15,14 +15,21 @@ const uint32_t DEFAULT_MAX_TRANSMITTED_MESSAGES_PER_SECOND = 100;
 class SyslogAsyncClient
 {
 public:
+    SyslogAsyncClient() = delete;
+
     SyslogAsyncClient(const std::shared_ptr<SyslogAbstractClientBackend>& backend,
                       const uint32_t maxTransmittedMessagesPerSecond = DEFAULT_MAX_TRANSMITTED_MESSAGES_PER_SECOND)
-        : backend(backend),
-          maxTransmittedMessagesPerSecond(maxTransmittedMessagesPerSecond)
+        : backend(backend)
     {
         if (maxTransmittedMessagesPerSecond == 0) {
             throw std::runtime_error("max transmitted messages per second is equal to zero");
         }
+
+        auto callback = [=](syslog_message_t& message) -> void {
+            backend->LogMessage(message.severity, message.message);
+        };
+
+        queue = std::make_shared<SelfConsumingQueue<syslog_message_t>>(callback, maxTransmittedMessagesPerSecond);
     }
 
     SyslogAsyncClient(const SyslogAsyncClient& copy) = delete;
@@ -45,10 +52,5 @@ private:
 private:
     std::shared_ptr<SyslogAbstractClientBackend> backend;
 
-    SelfConsumingQueue<syslog_message_t> queue{
-        [this](syslog_message_t& message) -> void {
-            backend->LogMessage(message.severity, message.message);
-        }};
-
-    uint32_t maxTransmittedMessagesPerSecond;
+    std::shared_ptr<SelfConsumingQueue<syslog_message_t>> queue;
 };

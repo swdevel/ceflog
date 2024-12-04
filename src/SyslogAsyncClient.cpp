@@ -6,15 +6,15 @@ void SyslogAsyncClient::SetMaxTransmittedMessagesPerSecond(const uint32_t value)
         throw std::runtime_error("failed to set new value, cause param is equal to zero");
     }
 
-    maxTransmittedMessagesPerSecond = value;
+    queue->SetProcessingLimitPerSecond(value);
 }
 
 uint32_t SyslogAsyncClient::GetMaxTransmittedMessagesPerSecond() const noexcept
 {
-    return maxTransmittedMessagesPerSecond;
+    return queue->GetProcessingLimitPerSecond();
 }
 
 void SyslogAsyncClient::PushMessage(const SyslogSeverity severity, const std::string& message)
 {
-    queue.Push({severity, message});
+    queue->Push({severity, message});
 }

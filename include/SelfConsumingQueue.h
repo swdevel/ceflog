@@ -1,6 +1,7 @@
 #pragma once
 
 #include <atomic>
+#include <chrono>
 #include <condition_variable>
 #include <functional>
 #include <mutex>
@@ -13,8 +14,10 @@ class SelfConsumingQueue
 public:
     SelfConsumingQueue() = delete;
 
-    SelfConsumingQueue(const std::function<void(T&)>& callback)
+    SelfConsumingQueue(const std::function<void(T&)>& callback,
+                       const uint32_t processingLimitPerSecond)
         : callback(callback),
+          limit(processingLimitPerSecond),
           running(true)
     {
         thread = std::thread(&SelfConsumingQueue::Worker, this);
@@ -39,6 +42,16 @@ public:
     SelfConsumingQueue(SelfConsumingQueue&& move) noexcept = delete;
     SelfConsumingQueue& operator=(SelfConsumingQueue&& move) noexcept = delete;
 
+    void SetProcessingLimitPerSecond(const uint32_t value) noexcept
+    {
+        limit = value;
+    }
+
+    uint32_t GetProcessingLimitPerSecond() const noexcept
+    {
+        return limit;
+    }
+
     void Push(const T& element)
     {
         input.push(element);
@@ -56,11 +69,28 @@ public:
 
             output.swap(input);
 
+            auto timeoutBarrier = ProcessTimeoutBarrier();
+            uint32_t counter = 0;
+
             while (!output.empty()) {
                 callback(output.front());
                 output.pop();
+
+                counter++;
+
+                if (counter == limit) {
+                    std::this_thread::sleep_until(timeoutBarrier);
+                    timeoutBarrier = ProcessTimeoutBarrier();
+                    counter = 0;
+                }
             }
         }
+    }
+
+private:
+    inline std::chrono::time_point<std::chrono::system_clock> ProcessTimeoutBarrier() const noexcept
+    {
+        return std::chrono::system_clock::now() + std::chrono::seconds(1);
     }
 
 private:
@@ -73,4 +103,6 @@ private:
     std::atomic_bool running;
     std::thread thread;
     std::mutex mutex;
+
+    uint32_t limit;
 };
