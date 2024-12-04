@@ -160,3 +160,28 @@ TEST_F(SyslogAsyncClientTest, MaxTransmittedMessagesPerSecondTest)
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
+
+TEST_F(SyslogAsyncClientTest, FlushBeforeDestroyTest)
+{
+    const auto message = GetTime() + " mock message";
+
+    /*
+        Экземпляр класса SyslogAsyncClient создаётся с максимально коротким временем жизни
+        для проверки переключения очередей и отправки сообщений в момент вызова деструктора.
+    */
+    {
+        auto backend = std::make_shared<SyslogBoostClientBackend>("127.0.0.1",
+                                                                  "mockApplicationName");
+        SyslogAsyncClient client(backend);
+        client.PushMessage(SyslogSeverity::Info, message);
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Чтение последней строки из файла "/var/log/syslog"
+    std::ifstream syslogFile{syslogPath};
+    auto lastString = GetLastStringFromFile(syslogFile);
+
+    // Поиск отправленного сообщения в прочитанной строке
+    EXPECT_TRUE(lastString.find(message) != std::string::npos);
+}

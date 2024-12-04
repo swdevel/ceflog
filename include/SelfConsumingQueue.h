@@ -27,6 +27,7 @@ public:
     {
         {
             std::unique_lock<std::mutex> lock(mutex);
+            Flush();
             running = false;
         }
 
@@ -67,27 +68,32 @@ public:
                 available.wait(lock, [&]() { return !input.empty() || !running; });
             }
 
-            output.swap(input);
-
-            auto timeoutBarrier = ProcessTimeoutBarrier();
-            uint32_t counter = 0;
-
-            while (!output.empty()) {
-                callback(output.front());
-                output.pop();
-
-                counter++;
-
-                if (counter == limit) {
-                    std::this_thread::sleep_until(timeoutBarrier);
-                    timeoutBarrier = ProcessTimeoutBarrier();
-                    counter = 0;
-                }
-            }
+            Flush();
         }
     }
 
 private:
+    void Flush()
+    {
+        output.swap(input);
+
+        auto timeoutBarrier = ProcessTimeoutBarrier();
+        uint32_t counter = 0;
+
+        while (!output.empty()) {
+            callback(output.front());
+            output.pop();
+
+            counter++;
+
+            if (counter == limit) {
+                std::this_thread::sleep_until(timeoutBarrier);
+                timeoutBarrier = ProcessTimeoutBarrier();
+                counter = 0;
+            }
+        }
+    }
+
     inline std::chrono::time_point<std::chrono::system_clock> ProcessTimeoutBarrier() const noexcept
     {
         return std::chrono::system_clock::now() + std::chrono::seconds(1);
