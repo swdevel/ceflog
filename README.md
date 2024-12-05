@@ -25,41 +25,41 @@
 ### Linux
 
 Перед началом работы с библиотекой потребуется установить:
-~~~
-$> sudo apt-get install libboost-dev
-~~~
+```bash
+sudo apt-get install libboost-dev
+```
 Для сборки модульных и интеграционных тестов потребуется установить:
-~~~
-$> sudo apt-get install libgtest-dev
-~~~
+```bash
+sudo apt-get install libgtest-dev
+```
 Для генерации документации на основе исходных текстов потребуется установить:
-~~~
-$> sudo apt-get install doxygen
-~~~
+```bash
+sudo apt-get install doxygen
+```
 
 Для сборки библиотеки потребуется выполнить следующие команды:
-~~~
-$> mkdir -p $CEFLOG_PATH && cd $CEFLOG_PATH
-$> git clone https://github.com/swdevel/ceflog.git .
-$> mkdir -p $CEFLOG_BUILD_PATH && cd $CEFLOG_BUILD_PATH
-$> cmake $CEFLOG_PATH -DBUILD_TESTS=bool -DBUILD_EXAMPLES=bool
-$> make
-~~~
+```bash
+mkdir -p $CEFLOG_PATH && cd $CEFLOG_PATH
+git clone https://github.com/swdevel/ceflog.git .
+mkdir -p $CEFLOG_BUILD_PATH && cd $CEFLOG_BUILD_PATH
+cmake $CEFLOG_PATH -DBUILD_TESTS=bool -DBUILD_EXAMPLES=bool
+make
+```
 
 Описание переменных:
-~~~
+```bash
 CEFLOG_PATH - каталог для хранения локальной копии проекта
 CEFLOG_BUILD_PATH - каталог для сборки
 BUILD_TESTS - флаг для сборки модульных и интеграционных тестов, допустимые значения: on/off
 BUILD_EXAMPLES - флаг для сборки примеров использования библиотеки, допустимые значения: on/off
-~~~
+```
 
 Для генерации документации на основе исходных текстов потребуется выполнить следующие команды:
-~~~
-$> cd $CEFLOG_PATH
-$> doxygen
-$> firefox doxygen/html/index.html
-~~~
+```bash
+cd $CEFLOG_PATH
+doxygen
+firefox doxygen/html/index.html
+```
 
 ## Тестирование
 
@@ -67,9 +67,13 @@ $> firefox doxygen/html/index.html
 
 ### Модульное тестирование
 
-Файл "unit-tests" служит для запуска модульного тестирования, результат которого выводится в лог:
-~~~
-$> ./unit-tests
+Файл "unit-tests" служит для запуска модульного тестирования, результат которого выводится в лог.
+
+<details>
+<summary>Пример лога</summary>
+
+```bash
+./unit-tests
 [==========] Running 14 tests from 3 test suites.
 [----------] Global test environment set-up.
 [----------] 12 tests from CEFEventTest
@@ -81,7 +85,9 @@ $> ./unit-tests
 [----------] Global test environment tear-down
 [==========] 14 tests from 3 test suites ran. (1 ms total)
 [  PASSED  ] 14 tests.
-~~~
+```
+
+</details>
 
 ### Интеграционное тестирование
 
@@ -90,30 +96,33 @@ $> ./unit-tests
 В процессе интеграционного тестирования, будет осуществлена попытка передачи тестовых сообщений по протоколу syslog на локальный сервер (localhost) по порту 514. Для успешного прохождения тестирования, необходимо выполнить установку и настройку rsyslog server.
 Приведённая ниже инструкция составлена и проверена для Ubuntu 24.04 LTS.
 
+<details>
+<summary>Инструкция</summary>
+
 #### Шаг 1
 
 Для проверки наличия установленного rsyslog сервиса необходимо выполнить следующую команду:
-~~~
-$> apt list -a rsyslog
-~~~
+```bash
+apt list -a rsyslog
+```
 Если rsyslog отсутствует, то его можно установить при помощи следующей команды:
-~~~
-$> sudo apt-get install rsyslog -y or sudo apt install rsyslog -y
-~~~
+```bash
+sudo apt-get install rsyslog -y or sudo apt install rsyslog -y
+```
 После установки сервиса необходимо настроить его запуск при старте системы и запустить. Для этого необходимо выполнить следующие команды:
-~~~
-$> sudo systemctl start rsyslog
-$> sudo systemctl enable rsyslog
-~~~
+```bash
+sudo systemctl start rsyslog
+sudo systemctl enable rsyslog
+```
 
 #### Шаг 2
 
 Далее необходимо сконфигурировать сервис для приёма сообщений по протоколу UDP. Для этого необходимо открыть для редактирования конфигурационный файл сервиса:
-~~~
+```bash
 sudo vi /etc/rsyslog.conf
-~~~
+```
 В конфигурационном файле необходимо найти следующие строки:
-~~~
+```bash
 ...
 # provides UDP syslog reception
 # module(load="imudp")
@@ -123,10 +132,9 @@ sudo vi /etc/rsyslog.conf
 # module(load="imtcp")
 # input(type="imtcp" port="514")
 ...
-~~~
+```
 Если они закомментированы, то необходимо удалить символ комментария "#":
-~~~
-...
+```bash
 # provides UDP syslog reception
 module(load="imudp")
 input(type="imudp" port="514")
@@ -135,14 +143,14 @@ input(type="imudp" port="514")
 module(load="imtcp")
 input(type="imtcp" port="514")
 ...
-~~~
+```
 Ниже необходимо добавить следующие строки:
-~~~
+```bash
 $template RemInputLogs, "/var/log/remotelogs/%FROMHOST-IP%/%PROGRAMNAME%.log"
 *.* ?RemInputLogs
-~~~
+```
 Пример результата:
-~~~
+```bash
 ...
 # provides UDP syslog reception
 module(load="imudp")
@@ -155,38 +163,43 @@ input(type="imtcp" port="514")
 $template RemInputLogs, "/var/log/remotelogs/%FROMHOST-IP%/%PROGRAMNAME%.log"
 *.* ?RemInputLogs
 ...
-~~~
+```
 После этого необходимо сохранить изменения и завершить редактирование конфигурационного файла.
 Для валидации изменений конфигурационного файла можно использовать команду:
-~~~
-$> rsyslogd -f /etc/rsyslog.conf -N1
+```bash
+rsyslogd -f /etc/rsyslog.conf -N1
 rsyslogd: version 8.2312.0, config validation run (level 1), master config /etc/rsyslog.conf
 rsyslogd: End of config validation run. Bye.
-~~~
+```
 
 #### Шаг 3
 Если в тестовом окружении используется firewall, то необходимо настроить доступы для rsyslog. Для это необходимо выполнить следующие команды:
-~~~
-$> sudo ufw allow 514/tcp
-$> sudo ufw allow 514/udp
-~~~
+```bash
+sudo ufw allow 514/tcp
+sudo ufw allow 514/udp
+```
 
 #### Шаг 4
 Для того чтобы применились изменения конфигурации, необходимо перезапустить сервис rsyslog при помощи команды:
-~~~
+```bash
 sudo systemctl restart rsyslog
-~~~
+```
 Статус сервиса можно проверить при помощи команды:
-~~~
-$> sudo systemctl status rsyslog
-~~~
+```bash
+sudo systemctl status rsyslog
+```
+
+</details>
 
 ### Запуск интеграционных тестов
 
-Файл "integration-tests" служит для запуска интеграционного тестирования, результат которого выводится в лог:
+Файл "integration-tests" служит для запуска интеграционного тестирования, результат которого выводится в лог.
 
-~~~
-$> ./integration-tests
+<details>
+<summary>Пример лога</summary>
+
+```bash
+./integration-tests
 [==========] Running 9 tests from 1 test suite.
 [----------] Global test environment set-up.
 [----------] 9 tests from SyslogAsyncClientTest
@@ -198,7 +211,9 @@ $> ./integration-tests
 [----------] Global test environment tear-down
 [==========] 9 tests from 1 test suite ran. (3765 ms total)
 [  PASSED  ] 9 tests.
-~~~
+```
+
+</details>
 
 ## Примеры
 
