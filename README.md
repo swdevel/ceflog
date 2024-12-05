@@ -217,7 +217,80 @@ sudo systemctl status rsyslog
 
 ## Примеры
 
-TODO:
+<details>
+<summary>Пример</summary>
+
+Пример использования библиотеки для создания события в формате CEF с последующей отправкой на локальный syslog сервер:
+
+```cpp
+#include "CEFLog.h"
+
+using namespace ceflog::syslog;
+using namespace ceflog::event;
+
+int main()
+{
+    /**
+     * Создание экземпляра фабрики для генерации событий в формате CEF
+     */
+
+    const uint8_t formatVersion = 0;
+    const std::string deviceVendor = "Security";
+    const std::string deviceProduct = "threatmanager";
+    const std::string deviceVersion = "1.0";
+
+    const CEFEventFactory factory(formatVersion, deviceVendor, deviceProduct, deviceVersion);
+
+    /**
+     * Генерация события в формате CEF
+     */
+    const std::string deviceEventClassId = "100";
+    const std::string eventName = "worm successfully stopped";
+    const CEFSeverity severity = CEFSeverity::VeryHigh;
+
+    const std::vector<CEFEventExtension> extensions = {{"src", "10.0.0.1"},
+                                                       {"dst", "2.1.2.2"},
+                                                       {"spt", "1232"}};
+
+    const auto event = factory.CreateEvent(deviceEventClassId,
+                                           eventName,
+                                           severity,
+                                           extensions);
+
+    /**
+     * Сериализация события в строковое представление
+     *
+     */
+    CEFEventStringSerializer serializer;
+    const auto message = serializer.Serialize(event);
+
+    /**
+     * Создание логгера для передачи сообщений по протоколу syslog на локальный (localhost) syslog сервер
+     *
+     */
+    auto sysloggerBackend = std::make_shared<SyslogBoostClientBackend>("127.0.0.1",
+                                                                       deviceProduct);
+    SyslogAsyncClient sysloggerClient(sysloggerBackend);
+
+    /**
+     * Передача сообщения по протоколу syslog
+     */
+    sysloggerClient.PushMessage(SyslogSeverity::Info, message);
+
+    return 0;
+}
+```
+Для сборки примера необходимо выполнить линковку с библиотеками "ceflog" и "Boost::log":
+```cmake
+add_executable(example
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+)
+target_link_libraries(example ceflog Boost::log)
+```
+
+</details>
+
+Дополнительные примеры использования библиотеки доступны по [ссылке](https://github.com/swdevel/ceflog/tree/main/examples) 
 
 ## Документация
 
