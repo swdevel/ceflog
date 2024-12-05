@@ -282,6 +282,14 @@ int main()
 ```
 Для сборки примера необходимо выполнить линковку с библиотеками "ceflog" и "Boost::log":
 ```cmake
+set(Boost_USE_STATIC_LIBS on)
+
+find_package(Boost 1.54.0 REQUIRED COMPONENTS log)
+if (Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+    link_directories(${Boost_LIBRARY_DIRS})
+endif()
+
 add_executable(example
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 )
