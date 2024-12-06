@@ -197,7 +197,7 @@ public:
      *
      * @param value Идентификатор важности события, допустимые значения перечислены в ENUM_CLASS_MACRO(CEFSeverity, ...)
      */
-    void SetSeverity(const CEFSeverity& value) noexcept;
+    void SetSeverity(const CEFSeverity value) noexcept;
 
     /**
      * @brief Метод для получения идентификатора важности события

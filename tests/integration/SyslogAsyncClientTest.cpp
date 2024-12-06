@@ -139,6 +139,7 @@ TEST_F(SyslogAsyncClientTest, MaxTransmittedMessagesPerSecondTest)
     SyslogAsyncClient client(backend, maxTransmittedMessagesPerSecond);
 
     std::vector<std::string> messages;
+    messages.reserve(3);
     messages.emplace_back(GetTime() + std::string(" Mock message [1]"));
     messages.emplace_back(GetTime() + std::string(" Mock message [2]"));
     messages.emplace_back(GetTime() + std::string(" Mock message [3]"));

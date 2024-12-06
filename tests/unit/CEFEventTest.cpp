@@ -101,9 +101,7 @@ TEST_F(CEFEventTest, CopyAssignmentTest)
                    mockSeverity,
                    mockExtensions);
 
-    CEFEvent copy{};
-
-    copy = event;
+    CEFEvent copy = event;
 
     CheckEventFields(copy);
 }
@@ -145,9 +143,7 @@ TEST_F(CEFEventTest, MoveAssignmentTest)
                    mockSeverity,
                    mockExtensions);
 
-    CEFEvent copy{};
-
-    copy = std::move(event);
+    CEFEvent copy = std::move(event);
 
     CheckEventFields(copy);
 
@@ -303,6 +299,7 @@ TEST_F(CEFEventTest, EscapeCharactersTest)
     CEFSeverity severity = CEFSeverity::VeryHigh;
 
     std::vector<CEFEventExtension> extensions;
+    extensions.reserve(5);
 
     extensions.push_back({"src", "10.0.0.1"});
     extensions.push_back({"action", "blocked"});

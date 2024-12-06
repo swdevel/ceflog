@@ -113,7 +113,7 @@ std::string CEFEvent::GetName(const bool formatString) const noexcept
     return formatString ? EscapeCharactersIfPresent(name, Location::Header) : name;
 }
 
-void CEFEvent::SetSeverity(const CEFSeverity& value) noexcept
+void CEFEvent::SetSeverity(const CEFSeverity value) noexcept
 {
     severity = value;
 }
