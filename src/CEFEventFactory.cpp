@@ -1,3 +1,13 @@
+/**
+ * @file CEFEventFactory.cpp
+ * @author Alexander Borisov
+ * @brief Файл содержит определение функций класса для создания событий в формате "CEF (Common Event Format)"
+ * @version 0.1
+ * @date 2024-12-07
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include "CEFEventFactory.h"
 
 namespace ceflog::event

@@ -1,3 +1,13 @@
+/**
+ * @file CEFEventFactory.h
+ * @author Alexander Borisov
+ * @brief Файл содержит объявление класса для создания событий в формате "CEF (Common Event Format)"
+ * @version 0.1
+ * @date 2024-12-07
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #pragma once
 
 #include "CEFEvent.h"

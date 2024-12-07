@@ -1,9 +1,9 @@
 /**
  * @file CEFEvent.h
  * @author Alexander Borisov
- * @brief Файл содержит описание класса для работы с событиями в формате "Common Event Format (CEF)"
+ * @brief Файл содержит объявление класса для представления события в формате "CEF (Common Event Format)"
  * @version 0.1
- * @date 2024-11-14
+ * @date 2024-12-07
  *
  * @copyright Copyright (c) 2024
  *
@@ -38,7 +38,7 @@ struct CEFEventExtension {
 };
 
 /**
- * @brief Класс для работы с событиями в формате CEF (Common Event Format)
+ * @brief Класс для представления события в формате CEF (Common Event Format)
  *
  */
 class CEFEvent

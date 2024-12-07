@@ -1,3 +1,13 @@
+/**
+ * @file SelfConsumingQueue.h
+ * @author Alexander Borisov
+ * @brief Файл содержит объявление класса очереди с функцией автоматический асинхронной обработки
+ * @version 0.1
+ * @date 2024-12-07
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #pragma once
 
 #include <atomic>

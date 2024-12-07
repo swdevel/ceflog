@@ -1,3 +1,13 @@
+/**
+ * @file SyslogBoostClientBackend.h
+ * @author Alexander Borisov
+ * @brief Файл содержит объявление класса бэкенда для передачи сообщений по протоколу Syslog с использованием библиотеки boost::log
+ * @version 0.1
+ * @date 2024-12-07
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #pragma once
 
 #include <boost/asio.hpp>

@@ -1,3 +1,13 @@
+/**
+ * @file SyslogAsyncClient.cpp
+ * @author Alexander Borisov
+ * @brief Файл содержит определение функций класса для передачи сообщений по протоколу Syslog
+ * @version 0.1
+ * @date 2024-12-07
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include "SyslogAsyncClient.h"
 
 namespace ceflog::syslog
