@@ -1,7 +1,7 @@
 /**
  * @file SyslogSeverity.h
  * @author Alexander Borisov
- * @brief Файл содержит перечисление значений Severity Level протокола Syslog
+ * @brief Файл содержит перечисление значений параметра Severity Level протокола Syslog
  * @version 0.1
  * @date 2024-12-07
  *
