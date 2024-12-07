@@ -1,7 +1,7 @@
 /**
  * @file CEFEventStringSerializer.cpp
  * @author Alexander Borisov
- * @brief Файл содержит определение функций класса для сериализации CEFEvent в строковое представление
+ * @brief Файл содержит определение функций класса для сериализации CEFEvent в std::string
  * @version 0.1
  * @date 2024-12-07
  *
