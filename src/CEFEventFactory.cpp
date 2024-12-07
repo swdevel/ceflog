@@ -1,7 +1,7 @@
 /**
  * @file CEFEventFactory.cpp
  * @author Alexander Borisov
- * @brief Файл содержит определение функций класса для создания событий в формате "CEF (Common Event Format)"
+ * @brief Файл содержит определение функций класса для создания объектов с описанием событий в формате "CEF (Common Event Format)"
  * @version 0.1
  * @date 2024-12-07
  *
