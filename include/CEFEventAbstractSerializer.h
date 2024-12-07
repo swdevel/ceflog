@@ -15,6 +15,11 @@
 namespace ceflog::event
 {
 
+/**
+ * @brief Виртуальный класс для определения интерфейса сериализации CEFEvent
+ *
+ * @tparam T Параметр типа сериализации
+ */
 template <typename T>
 class CEFEventAbstractSerializer
 {
