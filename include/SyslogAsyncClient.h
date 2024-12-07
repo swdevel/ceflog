@@ -25,6 +25,10 @@ namespace ceflog::syslog
  */
 const uint32_t DEFAULT_MAX_TRANSMITTED_MESSAGES_PER_SECOND = 100;
 
+/**
+ * @brief Класс для передачи сообщений по протоколу Syslog
+ *
+ */
 class SyslogAsyncClient
 {
 public:

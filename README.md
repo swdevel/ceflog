@@ -303,3 +303,10 @@ target_link_libraries(example ceflog Boost::log)
 ## Документация
 
 При разработке библиотеки использовался документ ["ArcSight Common Event Format"](https://www.microfocus.com/documentation/arcsight/arcsight-smartconnectors-8.4/pdfdoc/cef-implementation-standard/cef-implementation-standard.pdf)
+
+Для генерации документации на основе исходных текстов потребуется выполнить следующие команды:
+```bash
+cd $CEFLOG_PATH
+doxygen
+firefox doxygen/html/index.html
+```
