@@ -41,8 +41,8 @@ public:
     /**
      * @brief Конструктор класса
      *
-     * @param callback Константный указатель на callback функцию, которая будет вызвана для обработки каждого из элементов очереди
-     * @param processingLimitPerSecond Максимально допустимое количество вызовов callback функции за одну секунду
+     * @param[in] callback Константный указатель на callback функцию, которая будет вызвана для обработки каждого из элементов очереди
+     * @param[in] processingLimitPerSecond Максимально допустимое количество вызовов callback функции за одну секунду
      */
     SelfConsumingQueue(const std::function<void(T&)>& callback,
                        const uint32_t processingLimitPerSecond)
@@ -76,7 +76,7 @@ public:
     /**
      * @brief Метод для установки максимально допустимого количества вызовов callback функции за одну секунду
      *
-     * @param value Максимально допустимое количество вызовов callback функции за одну секунду
+     * @param[in] value Максимально допустимое количество вызовов callback функции за одну секунду
      */
     void SetProcessingLimitPerSecond(const uint32_t value) noexcept
     {
@@ -96,7 +96,7 @@ public:
     /**
      * @brief Метод для добавления нового элемента в очередь
      *
-     * @param element Константная ссылка на элемент
+     * @param[in] element Константная ссылка на элемент
      */
     void Push(const T& element)
     {

@@ -25,10 +25,10 @@ public:
     /**
      * @brief Конструктор класса
      *
-     * @param formatVersion Версия формата "CEF (Common Event Format)"
-     * @param deviceVendor Идентификатор производителя
-     * @param deviceProduct Идентификатор продукта
-     * @param deviceVersion Идентификатор версии продукта
+     * @param[in] formatVersion Версия формата "CEF (Common Event Format)"
+     * @param[in] deviceVendor Идентификатор производителя
+     * @param[in] deviceProduct Идентификатор продукта
+     * @param[in] deviceVersion Идентификатор версии продукта
      */
     CEFEventFactory(const uint8_t formatVersion,
                     const std::string& deviceVendor,
@@ -44,10 +44,10 @@ public:
     /**
      * @brief Метод для создания объекта c описанием события в формате "CEF (Common Event Format)"
      *
-     * @param deviceEventClassId Уникальный идентификатор типа события
-     * @param name Понятное человеку описание события
-     * @param severity Важность события
-     * @param extensions Набор пар "ключ-значение" для расширения базового формата события
+     * @param[in] deviceEventClassId Уникальный идентификатор типа события
+     * @param[in] name Понятное человеку описание события
+     * @param[in] severity Важность события
+     * @param[in] extensions Набор пар "ключ-значение" для расширения базового формата события
      *
      * @return CEFEvent объект с описанием события в формате "CEF (Common Event Format)"
      */

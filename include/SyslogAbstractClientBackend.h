@@ -1,7 +1,7 @@
 /**
  * @file SyslogAbstractClientBackend.h
  * @author Alexander Borisov
- * @brief Файл содержит объявление базового класса бэкенда для передачи сообщений по протоколу Syslog
+ * @brief Файл содержит объявление базового класса механизма передачи сообщений по протоколу Syslog
  * @version 0.1
  * @date 2024-12-07
  *
@@ -18,9 +18,19 @@
 namespace ceflog::syslog
 {
 
+/**
+ * @brief Базовый класс механизма передачи сообщений по протоколу Syslog
+ *
+ */
 class SyslogAbstractClientBackend
 {
 public:
+    /**
+     * @brief Конструктор класса
+     *
+     * @param[in] syslogServerAddress IP-адрес сервера Syslog
+     * @param[in] applicationName Имя приложения для отображения в логах
+     */
     SyslogAbstractClientBackend(const std::string& syslogServerAddress, const std::string& applicationName)
     {
         if (syslogServerAddress.empty()) {
@@ -40,8 +50,16 @@ public:
     virtual ~SyslogAbstractClientBackend() = default;
 
 protected:
+    /**
+     * @brief IP-адрес сервера Syslog
+     *
+     */
     std::string syslogServerAddress;
 
+    /**
+     * @brief Имя приложения для отображения в логах
+     *
+     */
     std::string applicationName;
 };
 

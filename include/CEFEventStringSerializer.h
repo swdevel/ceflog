@@ -25,7 +25,7 @@ public:
     /**
      * @brief Метод для сериализации CEFEvent в std::string
      *
-     * @param event Константная ссылка на объект CEFEvent
+     * @param[in] event Константная ссылка на объект CEFEvent
      *
      * @return std::string Представление объекта CEFEvent в виде std::string
      */

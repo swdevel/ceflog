@@ -1,7 +1,7 @@
 /**
  * @file SyslogBoostClientBackend.h
  * @author Alexander Borisov
- * @brief Файл содержит объявление класса бэкенда для передачи сообщений по протоколу Syslog с использованием библиотеки boost::log
+ * @brief Файл содержит объявление класса для реализации механизма передачи сообщений по протоколу Syslog с использованием библиотеки boost::log
  * @version 0.1
  * @date 2024-12-07
  *
@@ -23,9 +23,19 @@
 namespace ceflog::syslog
 {
 
+/**
+ * @brief Класс для реализации механизма передачи сообщений по протоколу Syslog с использованием библиотеки boost::log
+ *
+ */
 class SyslogBoostClientBackend : public SyslogAbstractClientBackend
 {
 public:
+    /**
+     * @brief Конструктор класса
+     *
+     * @param[in] syslogServerAddress IP-адрес сервера Syslog
+     * @param[in] applicationName Имя приложения для отображения в логах
+     */
     SyslogBoostClientBackend(const std::string& syslogServerAddress, const std::string& applicationName)
         : SyslogAbstractClientBackend(syslogServerAddress, applicationName)
     {
@@ -41,6 +51,12 @@ public:
         Release();
     }
 
+    /**
+     * @brief Метод для отправки сообщения по протоколу Syslog
+     *
+     * @param[in] severity Идентификатор значения Severity Level протокола Syslog
+     * @param[in] message Сообщение
+     */
     virtual void LogMessage(const SyslogSeverity severity, const std::string& message) override;
 
 private:
