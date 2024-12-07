@@ -23,7 +23,7 @@ namespace ceflog::event
 ENUM_CLASS_MACRO(CEFSeverity, Undefined, Low, Medium, High, VeryHigh);
 
 /**
- * @brief Версия формата CEF (Common Event Format) по умолчанию
+ * @brief Версия формата "CEF (Common Event Format)" по умолчанию
  *
  */
 const uint8_t CEF_DEFAULT_FORMAT_VERSION = 0;
@@ -38,7 +38,7 @@ struct CEFEventExtension {
 };
 
 /**
- * @brief Класс для представления события в формате CEF (Common Event Format)
+ * @brief Класс для представления события в формате "CEF (Common Event Format)"
  *
  */
 class CEFEvent
@@ -46,6 +46,18 @@ class CEFEvent
 public:
     ~CEFEvent() = default;
 
+    /**
+     * @brief Конструктор класса
+     *
+     * @param[in] formatVersion Версия формата "CEF (Common Event Format)"
+     * @param[in] deviceVendor Идентификатор производителя
+     * @param[in] deviceProduct Идентификатор продукта
+     * @param[in] deviceVersion Идентификатор версии продукта
+     * @param[in] deviceEventClassId Уникальный идентификатор типа события
+     * @param[in] name Понятное человеку описание события
+     * @param[in] severity Важность события
+     * @param[in] extensions Набор пар "ключ-значение" для расширения базового формата события
+     */
     CEFEvent(const uint8_t formatVersion = CEF_DEFAULT_FORMAT_VERSION,
              const std::string& deviceVendor = "",
              const std::string& deviceProduct = "",
@@ -98,17 +110,17 @@ public:
     CEFEvent& operator=(CEFEvent&& other) noexcept;
 
     /**
-     * @brief Метод для присвоения значения версии формата CEF
+     * @brief Метод для присвоения значения версии формата "CEF (Common Event Format)".
+     * Например, для версии спецификации "1.2", значение должно быть равным "1".
      *
-     * @param[in] version Идентификатор версии формата CEF
-     * Например, для версии спецификации "1.2", значение будет равно "1"
+     * @param[in] version Идентификатор версии формата
      */
     void SetFormatVersion(const uint8_t version) noexcept;
 
     /**
-     * @brief Метод для получения версии формата CEF
+     * @brief Метод для получения версии формата "CEF (Common Event Format)"
      *
-     * @return uint8_t Целочисленный идентификатор версии формата CEF
+     * @return uint8_t Идентификатор версии формата
      */
     uint8_t GetFormatVersion() const noexcept;
 
@@ -177,7 +189,7 @@ public:
     std::string GetDeviceEventClassId(const bool formatString = false) const noexcept;
 
     /**
-     * @brief Метод для присвоения значения описания события
+     * @brief Метод для присвоения описания события
      *
      * @param value Строка для описания события
      */
@@ -238,7 +250,7 @@ private:
 
 private:
     /**
-     * @brief Версия формата CEF
+     * @brief Версия формата "CEF (Common Event Format)"
      *
      */
     uint8_t formatVersion;
